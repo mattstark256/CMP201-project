@@ -2,7 +2,12 @@
 
 #include <iostream>
 #include <string>
+#include <stdlib.h>     /* srand, rand */
+
 #include "Vector2i.h"
+
+
+
 
 UserInterface::UserInterface()
 {
@@ -20,32 +25,35 @@ void UserInterface::beginSession()
 
 	while (true)
 	{
-		std::cout << "Finding path\n";
+		// Generate map
+		Map map(Vector2i(32, 32));
+		map.generateObstacles();
 
-		//Vector2i v1(1, 2);
-		//Vector2i v2(3, 4);
-		//Vector2i v3;
+		// Generate start and end coords
+		Vector2i start, end;
+		while (true)
+		{
+			start = Vector2i(rand() % map.getSize().x, rand() % map.getSize().y);
+			if (map.getValue(start) == 0) break;
+		}
+		while (true)
+		{
+			end = Vector2i(rand() % map.getSize().x, rand() % map.getSize().y);
+			if (map.getValue(end) == 0 && end != start) break;
+		}
 
-		//std::cout << v1.x << " " << v1.y << std::endl;
-		//std::cout << v2.x << " " << v2.y << std::endl;
-		//std::cout << v3.x << " " << v3.y << std::endl;
+		// Generate path
+		std::cout << "Searching for path...\n";
+		Path path = aStarPathfinder.generatePath(map, start, end);
 
-		//v3 = v1 + v2;
-
-		//std::cout << v1.x << " " << v1.y << std::endl;
-		//std::cout << v2.x << " " << v2.y << std::endl;
-		//std::cout << v3.x << " " << v3.y << std::endl;
-
-		//v3 -= v2;
-
-		//std::cout << v1.x << " " << v1.y << std::endl;
-		//std::cout << v2.x << " " << v2.y << std::endl;
-		//std::cout << v3.x << " " << v3.y << std::endl;
-
-		//if(v3 == v1){ std::cout << "They're equal\n"; }
+		// Display results
+		if (!path.isConnected()) { std::cout << "No path found!\n"; }
+		else { std::cout << "Path found!\n"; }
+		mapDisplayer.displayMap(map, path);
 
 		std::cout << "Run again?\n";
 		std::string s;
 		std::cin >> s;
 	}
 }
+

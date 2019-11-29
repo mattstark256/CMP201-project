@@ -9,7 +9,8 @@ struct Vector2i
 	Vector2i(int _x = 0, int _y = 0);
 	~Vector2i();
 
-	bool operator==(const Vector2i& rhs);
+	bool operator==(const Vector2i& rhs) const;
+	bool operator!=(const Vector2i& rhs) const;
 	Vector2i& operator+=(const Vector2i& rhs);
 	Vector2i& operator-=(const Vector2i& rhs);
 };

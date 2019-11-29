@@ -11,9 +11,15 @@ Vector2i::~Vector2i()
 }
 
 
-bool Vector2i::operator==(const Vector2i& rhs)
+bool Vector2i::operator==(const Vector2i& rhs) const
 {
 	return x == rhs.x && y == rhs.y;
+}
+
+
+bool Vector2i::operator!=(const Vector2i& rhs) const
+{
+	return x != rhs.x || y != rhs.y;
 }
 
 

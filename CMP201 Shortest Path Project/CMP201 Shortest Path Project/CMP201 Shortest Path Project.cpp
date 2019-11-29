@@ -2,12 +2,15 @@
 //
 
 #include <iostream>
-
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 #include "UserInterface.h"
 
 int main()
 {
     std::cout << "Hello World!\n"; 
+
+	srand(time(0));
 
 	UserInterface userInterface;
 	userInterface.beginSession();

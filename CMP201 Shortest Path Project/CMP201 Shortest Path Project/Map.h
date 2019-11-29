@@ -9,9 +9,12 @@ public:
 	Map(Vector2i _size);
 	~Map();
 
-	int getValue(const Vector2i& coord);
-	void setValue(const Vector2i& coord, int value);
-	bool isWithinMap(const Vector2i& coord);
+	int getValue(Vector2i coord) const;
+	void setValue(Vector2i coord, int value);
+	bool isWithinMap(Vector2i coord) const;
+	const Vector2i& getSize() const;
+
+	void generateObstacles();
 
 private:
 	int* mapValues;

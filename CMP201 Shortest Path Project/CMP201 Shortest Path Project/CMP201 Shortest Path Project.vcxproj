@@ -151,16 +151,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AStarClosedList.cpp" />
+    <ClCompile Include="AStarOpenList.cpp" />
     <ClCompile Include="AStarPathfinder.cpp" />
+    <ClCompile Include="AStarNode.cpp" />
     <ClCompile Include="CMP201 Shortest Path Project.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MapDisplayer.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="UserInterface.cpp" />
     <ClCompile Include="Vector2i.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStarClosedList.h" />
+    <ClInclude Include="AStarOpenList.h" />
     <ClInclude Include="AStarPathfinder.h" />
+    <ClInclude Include="AStarNode.h" />
+    <ClInclude Include="MapDisplayer.h" />
     <ClInclude Include="Vector2i.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Path.h" />

@@ -42,6 +42,18 @@
     <ClCompile Include="Vector2i.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MapDisplayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarClosedList.cpp">
+      <Filter>Source Files\Pathfinders</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarOpenList.cpp">
+      <Filter>Source Files\Pathfinders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface.h">
@@ -61,6 +73,18 @@
     </ClInclude>
     <ClInclude Include="Vector2i.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MapDisplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AStarNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AStarClosedList.h">
+      <Filter>Header Files\Pathfinders</Filter>
+    </ClInclude>
+    <ClInclude Include="AStarOpenList.h">
+      <Filter>Header Files\Pathfinders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
