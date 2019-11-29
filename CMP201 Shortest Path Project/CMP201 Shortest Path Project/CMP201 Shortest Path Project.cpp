@@ -4,15 +4,15 @@
 #include <iostream>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include "AlgorithmTester.h"
 #include "UserInterface.h"
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
-
 	srand(time(0));
 
-	UserInterface userInterface;
+	AlgorithmTester algorithmTester;
+	UserInterface userInterface(&algorithmTester);
 	userInterface.beginSession();
 }
 

@@ -48,11 +48,14 @@
     <ClCompile Include="AStarNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AStarClosedList.cpp">
+    <ClCompile Include="AStarClosedSet.cpp">
       <Filter>Source Files\Pathfinders</Filter>
     </ClCompile>
-    <ClCompile Include="AStarOpenList.cpp">
+    <ClCompile Include="AStarOpenSet.cpp">
       <Filter>Source Files\Pathfinders</Filter>
+    </ClCompile>
+    <ClCompile Include="AlgorithmTester.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,11 +83,22 @@
     <ClInclude Include="AStarNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AStarClosedList.h">
+    <ClInclude Include="AStarClosedSet.h">
       <Filter>Header Files\Pathfinders</Filter>
     </ClInclude>
-    <ClInclude Include="AStarOpenList.h">
+    <ClInclude Include="AStarOpenSet.h">
       <Filter>Header Files\Pathfinders</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlgorithmTester.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CMP201 Shortest Path Project.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

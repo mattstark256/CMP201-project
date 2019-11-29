@@ -2,6 +2,7 @@
 
 #include <stdlib.h> // abs
 #include <algorithm> // min, max
+using namespace std; // min, max
 
 
 AStarPathfinder::AStarPathfinder()
@@ -13,21 +14,20 @@ AStarPathfinder::~AStarPathfinder()
 {
 }
 
-Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
-{
-	Path path(start, end);
 
+Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end, bool displayResults, MapDisplayer* mapDisplayer)
+{
 	AStarNode* startNode = new AStarNode();
 	startNode->coord = start;
-	startNode->f = getHeuristic(start, end);
-	openList.insertOrdered(startNode);
+	startNode->f = findHeuristic(start, end);
+	openSet.insertOrdered(startNode);
 
 	AStarNode* endNode = nullptr;
 
 	bool pathFound = false;
-	while (!openList.isEmpty())
+	while (!openSet.isEmpty())
 	{
-		AStarNode* current = openList.getBackNode();
+		AStarNode* current = openSet.getBackNode();
 
 		if (current->coord == end)
 		{
@@ -37,8 +37,8 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 			break;
 		}
 
-		openList.popBack();
-		closedList.addNode(current);
+		openSet.popBack();
+		closedSet.addNode(current);
 
 		for (int i = 0; i < MOVEMENT_DIRECTIONS; i++)
 		{
@@ -54,13 +54,13 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 			{ continue; }
 
 			// If the neighbour is on the closed list, skip it
-			if (closedList.containsCoord(neighbourCoord)) { continue; }
+			if (closedSet.contains(neighbourCoord)) { continue; }
 
 			float new_g = current->g + distances[i];
 
 			// If it's in the open list
-			std::vector<AStarNode*>::iterator it = openList.findNode(neighbourCoord);
-			if (!openList.iteratorIsEnd(it))
+			std::vector<AStarNode*>::iterator it = openSet.findNode(neighbourCoord);
+			if (!openSet.iteratorIsEnd(it))
 			{
 				if ((*it)->g < new_g)
 				{
@@ -69,20 +69,21 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 				else
 				{
 					// We'll be calculating a new value for f so it'll need to be re-inserted to maintain the correct list order
-					openList.deleteNode(it);
+					openSet.deleteNode(it);
 				}
 			}
 
 			AStarNode* neighbourNode = new AStarNode();
 			neighbourNode->coord = neighbourCoord;
 			neighbourNode->g = new_g;
-			neighbourNode->h = getHeuristic(neighbourCoord, end);
+			neighbourNode->h = findHeuristic(neighbourCoord, end);
 			neighbourNode->f = neighbourNode->g + neighbourNode->h;
 			neighbourNode->parent = current;
-			openList.insertOrdered(neighbourNode);
+			openSet.insertOrdered(neighbourNode);
 		}
 	}
 
+	Path path(start, end);
 	if (pathFound)
 	{
 		path.setConnected(true);
@@ -95,19 +96,26 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 		}
 	}
 
-	openList.deleteAll();
-	closedList.deleteAll();
+	if (displayResults && mapDisplayer != nullptr)
+	{
+		mapDisplayer->loadMap(map);
+		mapDisplayer->drawAStarOpenSet(openSet);
+		mapDisplayer->drawAStarClosedSet(closedSet);
+		mapDisplayer->drawPath(path);
+		mapDisplayer->print();
+	}
+
+	openSet.deleteAll();
+	closedSet.deleteAll();
 
 	return path;
 }
 
 
-
-float AStarPathfinder::getHeuristic(Vector2i a, Vector2i b)
+// Find octile distance
+float AStarPathfinder::findHeuristic(Vector2i a, Vector2i b)
 {
 	float dx = abs(a.x - b.x);
 	float dy = abs(a.y - b.y);
-	float dMin = std::min(dx, dy);
-	float dMax = std::max(dx, dy);
-	return dMax + 0.414 * dMin;
+	return max(dx, dy) + 0.414 * min(dx, dy);
 }

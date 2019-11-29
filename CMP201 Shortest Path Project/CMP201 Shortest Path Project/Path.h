@@ -12,6 +12,7 @@ public:
 
 	Vector2i getStart() const { return start; }
 	Vector2i getEnd() const { return end; }
+	const std::vector<Vector2i>* getPathCoords() const { return &pathCoords; }
 	bool isConnected() const { return connected; }
 	void setConnected(bool _connected) { connected = _connected; }
 	void addPathCoord(Vector2i pathCoord);
@@ -20,7 +21,7 @@ public:
 private:
 	Vector2i start;
 	Vector2i end;
-	bool connected = false;
 	std::vector<Vector2i> pathCoords;
+	bool connected = false;
 };
 

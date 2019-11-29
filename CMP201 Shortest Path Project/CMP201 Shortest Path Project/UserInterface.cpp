@@ -3,13 +3,14 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>     /* srand, rand */
+using namespace std;
 
 #include "Vector2i.h"
 
 
 
 
-UserInterface::UserInterface()
+UserInterface::UserInterface(AlgorithmTester* _algorithmTester) : algorithmTester(_algorithmTester)
 {
 }
 
@@ -21,39 +22,123 @@ UserInterface::~UserInterface()
 
 void UserInterface::beginSession()
 {
-	std::cout << "Session begun\n";
+	cout << "Matt's pathfinding algorithm tester\n";
 
+	mainMenu();
+}
+
+
+void UserInterface::mainMenu()
+{
 	while (true)
 	{
-		// Generate map
-		Map map(Vector2i(32, 32));
-		map.generateObstacles();
+		cout << "MAIN MENU\n";
+		cout << "1: Visualize algorithm\n";
+		cout << "2: Test algorithm performance\n";
+		cout << "3: Test algorithm performance head to head\n";
+		cout << "4: Quit\n";
 
-		// Generate start and end coords
-		Vector2i start, end;
-		while (true)
-		{
-			start = Vector2i(rand() % map.getSize().x, rand() % map.getSize().y);
-			if (map.getValue(start) == 0) break;
+		int input = getIntInput();
+
+		if (input == 1) {
+			visualizeAlgorithm();
 		}
-		while (true)
-		{
-			end = Vector2i(rand() % map.getSize().x, rand() % map.getSize().y);
-			if (map.getValue(end) == 0 && end != start) break;
+		else if (input == 2) {
+
 		}
+		else if (input == 3) {
 
-		// Generate path
-		std::cout << "Searching for path...\n";
-		Path path = aStarPathfinder.generatePath(map, start, end);
-
-		// Display results
-		if (!path.isConnected()) { std::cout << "No path found!\n"; }
-		else { std::cout << "Path found!\n"; }
-		mapDisplayer.displayMap(map, path);
-
-		std::cout << "Run again?\n";
-		std::string s;
-		std::cin >> s;
+		}
+		else if (input == 4) {
+			return;
+		}
 	}
 }
 
+void UserInterface::visualizeAlgorithm()
+{
+	cout << "Please choose an algorithm.\n";
+
+	Algorithm algorithm = selectAlgorithm();
+
+	cout << "Please enter map size.\n";
+
+	int mapSize = getIntInput();
+
+	//cout << "Visualizing the ";
+	//switch (algorithm)
+	//{
+	//case Lee:
+	//	cout << "Lee";
+	//	break;
+	//case Dijkstra:
+	//	cout << "Dijkstra";
+	//	break;
+	//case AStar:
+	//	cout << "A*";
+	//	break;
+	//default:
+	//	break;
+	//}
+	//cout << " algorithm with a map size of " << mapSize << ". Start and end points will be randomly selected.\n\n";
+
+	while (true)
+	{
+		algorithmTester->visualizeAlgorithm(algorithm, mapSize);
+		cout << "\n";
+
+		while (true)
+		{
+			cout << "Run algorithm again?\n";
+			cout << "1: Yes\n";
+			cout << "2: No\n";
+
+			int input = getIntInput();
+
+			if (input == 1) {
+				break;
+			}
+			else if (input == 2) {
+				return;
+			}
+		}
+	}
+}
+
+
+// Gets the users input as an int. Non-int values return 0.
+int UserInterface::getIntInput()
+{
+	int input;
+	cin >> input;
+	cout << "\n";
+
+	// Handle non-int inputs
+	cin.clear(); // Clear the error flags
+	cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard any input waiting in the stream
+
+	return input;
+}
+
+
+Algorithm UserInterface::selectAlgorithm()
+{
+	while (true)
+	{
+		cout << "1: Lee\n";
+		cout << "2: Dijkstra\n";
+		cout << "3: A*\n";
+
+		int input = getIntInput();
+
+		if (input == 1) {
+			return Algorithm::Lee;
+		}
+		else if (input == 2) {
+			return Algorithm::Dijkstra;
+		}
+		else if (input == 3) {
+			return Algorithm::AStar;
+		}
+	}
+}

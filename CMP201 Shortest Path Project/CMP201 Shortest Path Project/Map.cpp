@@ -11,7 +11,7 @@ Map::Map(Vector2i _size) : size(_size)
 
 Map::~Map()
 {
-	delete mapValues;
+	delete[] mapValues;
 }
 
 

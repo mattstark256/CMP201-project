@@ -151,8 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AStarClosedList.cpp" />
-    <ClCompile Include="AStarOpenList.cpp" />
+    <ClCompile Include="AlgorithmTester.cpp" />
+    <ClCompile Include="AStarClosedSet.cpp" />
+    <ClCompile Include="AStarOpenSet.cpp" />
     <ClCompile Include="AStarPathfinder.cpp" />
     <ClCompile Include="AStarNode.cpp" />
     <ClCompile Include="CMP201 Shortest Path Project.cpp" />
@@ -164,16 +165,21 @@
     <ClCompile Include="Vector2i.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AStarClosedList.h" />
-    <ClInclude Include="AStarOpenList.h" />
+    <ClInclude Include="AlgorithmTester.h" />
+    <ClInclude Include="AStarClosedSet.h" />
+    <ClInclude Include="AStarOpenSet.h" />
     <ClInclude Include="AStarPathfinder.h" />
     <ClInclude Include="AStarNode.h" />
     <ClInclude Include="MapDisplayer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Vector2i.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="Pathfinder.h" />
     <ClInclude Include="UserInterface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CMP201 Shortest Path Project.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

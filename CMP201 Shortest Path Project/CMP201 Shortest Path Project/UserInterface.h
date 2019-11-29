@@ -1,20 +1,21 @@
 #pragma once
 
-#include "Map.h"
-#include "MapDisplayer.h"
-#include "AStarPathfinder.h"
-
+#include "AlgorithmTester.h"
 
 class UserInterface
 {
 public:
-	UserInterface();
+	UserInterface(AlgorithmTester* _algorithmTester);
 	~UserInterface();
 
 	void beginSession();
 
 private:
-	MapDisplayer mapDisplayer;
-	AStarPathfinder aStarPathfinder;
+	AlgorithmTester* algorithmTester;
+
+	void mainMenu();
+	void visualizeAlgorithm();
+	int getIntInput();
+	Algorithm selectAlgorithm();
 };
 
