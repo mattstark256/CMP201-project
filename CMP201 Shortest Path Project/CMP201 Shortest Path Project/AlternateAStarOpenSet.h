@@ -4,11 +4,11 @@
 #include <vector>
 
 
-class AStarOpenSet
+class AlternateAStarOpenSet
 {
 public:
-	AStarOpenSet();
-	~AStarOpenSet();
+	AlternateAStarOpenSet();
+	~AlternateAStarOpenSet();
 
 	bool isEmpty();
 	void deleteNode(std::vector<AStarNode*>::iterator it);

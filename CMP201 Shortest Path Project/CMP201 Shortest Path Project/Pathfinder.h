@@ -11,6 +11,7 @@ public:
 	Pathfinder();
 	~Pathfinder();
 
-	virtual Path generatePath(const Map& map, Vector2i start, Vector2i end, bool displayResults, MapDisplayer* mapDisplayer);
+	virtual Path generatePath(const Map& map, Vector2i start, Vector2i end);
+	virtual Path generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer);
 };
 

@@ -152,6 +152,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AlgorithmTester.cpp" />
+    <ClCompile Include="AlternateAStarClosedSet.cpp" />
+    <ClCompile Include="AlternateAStarOpenSet.cpp" />
+    <ClCompile Include="AlternateAStarPathfinder.cpp" />
     <ClCompile Include="AStarClosedSet.cpp" />
     <ClCompile Include="AStarOpenSet.cpp" />
     <ClCompile Include="AStarPathfinder.cpp" />
@@ -166,6 +169,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgorithmTester.h" />
+    <ClInclude Include="AlternateAStarClosedSet.h" />
+    <ClInclude Include="AlternateAStarOpenSet.h" />
+    <ClInclude Include="AlternateAStarPathfinder.h" />
     <ClInclude Include="AStarClosedSet.h" />
     <ClInclude Include="AStarOpenSet.h" />
     <ClInclude Include="AStarPathfinder.h" />

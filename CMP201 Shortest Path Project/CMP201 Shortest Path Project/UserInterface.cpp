@@ -44,10 +44,10 @@ void UserInterface::mainMenu()
 			visualizeAlgorithm();
 		}
 		else if (input == 2) {
-
+			testAlgorithmPerformance();
 		}
 		else if (input == 3) {
-
+			testAlgorithmPerformanceHeadToHead();
 		}
 		else if (input == 4) {
 			return;
@@ -65,23 +65,6 @@ void UserInterface::visualizeAlgorithm()
 
 	int mapSize = getIntInput();
 
-	//cout << "Visualizing the ";
-	//switch (algorithm)
-	//{
-	//case Lee:
-	//	cout << "Lee";
-	//	break;
-	//case Dijkstra:
-	//	cout << "Dijkstra";
-	//	break;
-	//case AStar:
-	//	cout << "A*";
-	//	break;
-	//default:
-	//	break;
-	//}
-	//cout << " algorithm with a map size of " << mapSize << ". Start and end points will be randomly selected.\n\n";
-
 	while (true)
 	{
 		algorithmTester->visualizeAlgorithm(algorithm, mapSize);
@@ -90,6 +73,102 @@ void UserInterface::visualizeAlgorithm()
 		while (true)
 		{
 			cout << "Run algorithm again?\n";
+			cout << "1: Yes\n";
+			cout << "2: No\n";
+
+			int input = getIntInput();
+
+			if (input == 1) {
+				break;
+			}
+			else if (input == 2) {
+				return;
+			}
+		}
+	}
+}
+
+
+void UserInterface::testAlgorithmPerformance()
+{
+	cout << "Please choose an algorithm.\n";
+
+	Algorithm algorithm = selectAlgorithm();
+
+	cout << "Please enter map size.\n";
+
+	int mapSize = getIntInput();
+
+	cout << "Please enter number of random maps.\n";
+
+	int maps = getIntInput();
+
+	cout << "Please enter number of random routes per map.\n";
+
+	int routes = getIntInput();
+
+	cout << "Please enter number of iterations per route. Higher values reduce ms rounding error.\n";
+
+	int iterations = getIntInput();
+
+	while (true)
+	{
+		algorithmTester->testAlgorithm(algorithm, mapSize, maps, routes, iterations);
+		cout << "\n";
+
+		while (true)
+		{
+			cout << "Run test again?\n";
+			cout << "1: Yes\n";
+			cout << "2: No\n";
+
+			int input = getIntInput();
+
+			if (input == 1) {
+				break;
+			}
+			else if (input == 2) {
+				return;
+			}
+		}
+	}
+}
+
+
+void UserInterface::testAlgorithmPerformanceHeadToHead()
+{
+	cout << "Please choose the first algorithm.\n";
+
+	Algorithm algorithm1 = selectAlgorithm();
+
+	cout << "Please choose the second algorithm.\n";
+
+	Algorithm algorithm2 = selectAlgorithm();
+
+	cout << "Please enter map size.\n";
+
+	int mapSize = getIntInput();
+
+	cout << "Please enter number of random maps.\n";
+
+	int maps = getIntInput();
+
+	cout << "Please enter number of random routes per map.\n";
+
+	int routes = getIntInput();
+
+	cout << "Please enter number of iterations per route. Higher values reduce ms rounding error.\n";
+
+	int iterations = getIntInput();
+
+	while (true)
+	{
+		algorithmTester->testAlgorithmsHeadToHead(algorithm1, algorithm2, mapSize, maps, routes, iterations);
+		cout << "\n";
+
+		while (true)
+		{
+			cout << "Run test again?\n";
 			cout << "1: Yes\n";
 			cout << "2: No\n";
 
@@ -128,6 +207,7 @@ Algorithm UserInterface::selectAlgorithm()
 		cout << "1: Lee\n";
 		cout << "2: Dijkstra\n";
 		cout << "3: A*\n";
+		cout << "4: A* alternate\n";
 
 		int input = getIntInput();
 
@@ -140,5 +220,29 @@ Algorithm UserInterface::selectAlgorithm()
 		else if (input == 3) {
 			return Algorithm::AStar;
 		}
+		else if (input == 4) {
+			return Algorithm::AStarAlternate;
+		}
+	}
+}
+
+void UserInterface::printAlgorithmName(Algorithm algorithm)
+{
+	switch (algorithm)
+	{
+	case Lee:
+		cout << "Lee";
+		break;
+	case Dijkstra:
+		cout << "Dijkstra";
+		break;
+	case AStar:
+		cout << "A*";
+		break;
+	case AStarAlternate:
+		cout << "A* alternate";
+		break;
+	default:
+		break;
 	}
 }

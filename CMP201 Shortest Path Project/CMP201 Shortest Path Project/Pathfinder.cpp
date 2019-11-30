@@ -12,9 +12,14 @@ Pathfinder::~Pathfinder()
 }
 
 
-Path Pathfinder::generatePath(const Map& map, Vector2i start, Vector2i end, bool displayResults, MapDisplayer* mapDisplayer)
+Path Pathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 {
-	Path path(start, end);
-	return path;
+	return Path(start, end);
+}
+
+
+Path Pathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer)
+{
+	return generatePath(map, start, end);
 }
 

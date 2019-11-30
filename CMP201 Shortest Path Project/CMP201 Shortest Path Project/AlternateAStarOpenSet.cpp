@@ -1,32 +1,32 @@
-#include "AStarOpenSet.h"
+#include "AlternateAStarOpenSet.h"
 
 #include <algorithm> // find_if
 
 
-AStarOpenSet::AStarOpenSet()
+AlternateAStarOpenSet::AlternateAStarOpenSet()
 {
 }
 
 
-AStarOpenSet::~AStarOpenSet()
+AlternateAStarOpenSet::~AlternateAStarOpenSet()
 {
 }
 
 
-bool AStarOpenSet::isEmpty()
+bool AlternateAStarOpenSet::isEmpty()
 {
 	return set.empty();
 }
 
 
-void AStarOpenSet::deleteNode(std::vector<AStarNode*>::iterator it)
+void AlternateAStarOpenSet::deleteNode(std::vector<AStarNode*>::iterator it)
 {
-	delete *it;
+	delete* it;
 	set.erase(it);
 }
 
 
-void AStarOpenSet::deleteAll()
+void AlternateAStarOpenSet::deleteAll()
 {
 	for (auto node : set)
 	{
@@ -36,20 +36,20 @@ void AStarOpenSet::deleteAll()
 }
 
 
-AStarNode* AStarOpenSet::getBackNode()
+AStarNode* AlternateAStarOpenSet::getBackNode()
 {
 	return set.back();
 }
 
 
-void AStarOpenSet::popBack()
+void AlternateAStarOpenSet::popBack()
 {
 	set.pop_back();
 }
 
 
 // Insert the node into the open set in descending order of f
-void AStarOpenSet::insertOrdered(AStarNode* node)
+void AlternateAStarOpenSet::insertOrdered(AStarNode* node)
 {
 	for (std::vector<AStarNode*>::iterator it = set.begin(); it != set.end(); it++)
 	{
@@ -67,7 +67,7 @@ void AStarOpenSet::insertOrdered(AStarNode* node)
 }
 
 
-std::vector<AStarNode*>::iterator AStarOpenSet::findNode(Vector2i coord)
+std::vector<AStarNode*>::iterator AlternateAStarOpenSet::findNode(Vector2i coord)
 {
 	for (auto it = set.begin(); it != set.end(); it++)
 	{
@@ -80,13 +80,13 @@ std::vector<AStarNode*>::iterator AStarOpenSet::findNode(Vector2i coord)
 }
 
 
-bool AStarOpenSet::isEnd(std::vector<AStarNode*>::iterator it)
+bool AlternateAStarOpenSet::isEnd(std::vector<AStarNode*>::iterator it)
 {
 	return it == set.end();
 }
 
 
-const std::vector<AStarNode*>* AStarOpenSet::getSet() const
+const std::vector<AStarNode*>* AlternateAStarOpenSet::getSet() const
 {
 	return &set;
 }

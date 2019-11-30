@@ -1,21 +1,21 @@
-#include "AStarPathfinder.h"
+#include "AlternateAStarPathfinder.h"
 
 #include <stdlib.h> // abs
 #include <algorithm> // min, max
 using namespace std; // min, max
 
 
-AStarPathfinder::AStarPathfinder()
+AlternateAStarPathfinder::AlternateAStarPathfinder()
 {
 }
 
 
-AStarPathfinder::~AStarPathfinder()
+AlternateAStarPathfinder::~AlternateAStarPathfinder()
 {
 }
 
 
-Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
+Path AlternateAStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 {
 	// This is used for calculating position hashes
 	closedSet.setMapWidth(map.getSize().x);
@@ -67,7 +67,9 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 			// A diagonal route can be blocked by adjacent obstacles with corners intersecting the route
 			if (map.getValue(neighbourCoord) == 1 ||
 				isDiagonal[i] && (map.getValue(Vector2i(neighbourCoord.x, current->coord.y)) == 1 || map.getValue(Vector2i(current->coord.x, neighbourCoord.y)) == 1))
-			{ continue; }
+			{
+				continue;
+			}
 
 			// If the neighbour is on the closed list, skip it
 			if (closedSet.contains(neighbourCoord)) { continue; }
@@ -122,7 +124,7 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 }
 
 
-Path AStarPathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer)
+Path AlternateAStarPathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer)
 {
 	// deleteSets is set to false so the sets can be drawn on the map
 	deleteSets = false;
@@ -130,8 +132,8 @@ Path AStarPathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector
 	deleteSets = true;
 
 	mapDisplayer.loadMap(map);
-	mapDisplayer.drawAStarOpenSet(openSet);
-	mapDisplayer.drawAStarClosedSet(closedSet);
+	//mapDisplayer.drawAStarOpenSet(openSet);
+	//mapDisplayer.drawAStarClosedSet(closedSet);
 	mapDisplayer.drawPath(path);
 	mapDisplayer.print();
 
@@ -143,7 +145,7 @@ Path AStarPathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector
 
 
 // Find octile distance
-float AStarPathfinder::findHeuristic(Vector2i a, Vector2i b)
+float AlternateAStarPathfinder::findHeuristic(Vector2i a, Vector2i b)
 {
 	float dx = abs(a.x - b.x);
 	float dy = abs(a.y - b.y);

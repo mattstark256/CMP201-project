@@ -4,11 +4,11 @@
 #include <vector>
 
 
-class AStarClosedSet
+class AlternateAStarClosedSet
 {
 public:
-	AStarClosedSet();
-	~AStarClosedSet();
+	AlternateAStarClosedSet();
+	~AlternateAStarClosedSet();
 
 	void addNode(AStarNode* node);
 	bool contains(Vector2i coord);

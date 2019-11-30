@@ -15,7 +15,11 @@ private:
 
 	void mainMenu();
 	void visualizeAlgorithm();
+	void testAlgorithmPerformance();
+	void testAlgorithmPerformanceHeadToHead();
+
 	int getIntInput();
 	Algorithm selectAlgorithm();
+	void printAlgorithmName(Algorithm algorithm);
 };
 

@@ -2,25 +2,25 @@
 #include "Pathfinder.h"
 
 #include "AStarNode.h"
-#include "AStarOpenSet.h"
-#include "AStarClosedSet.h"
+#include "AlternateAStarOpenSet.h"
+#include "AlternateAStarClosedSet.h"
 
 #define MOVEMENT_DIRECTIONS 8
 
 
-class AStarPathfinder :
+class AlternateAStarPathfinder :
 	public Pathfinder
 {
 public:
-	AStarPathfinder();
-	~AStarPathfinder();
+	AlternateAStarPathfinder();
+	~AlternateAStarPathfinder();
 
 	Path generatePath(const Map& map, Vector2i start, Vector2i end) override;
 	Path generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer) override;
 
 private:
-	AStarOpenSet openSet;
-	AStarClosedSet closedSet;
+	AlternateAStarOpenSet openSet;
+	AlternateAStarClosedSet closedSet;
 	bool deleteSets = true;
 
 	float findHeuristic(Vector2i a, Vector2i b);

@@ -13,6 +13,7 @@ struct AStarNode
 	float h = 0;
 
 	Vector2i coord;
+	int positionHash;
 
 	AStarNode* parent;
 };
