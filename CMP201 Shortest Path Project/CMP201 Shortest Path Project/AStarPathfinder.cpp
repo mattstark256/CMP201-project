@@ -15,7 +15,7 @@ AStarPathfinder::~AStarPathfinder()
 }
 
 
-Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
+Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end, MapDisplayer* mapDisplayer)
 {
 	// This is used for calculating position hashes
 	closedSet.setMapWidth(map.getSize().x);
@@ -67,7 +67,9 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 			// A diagonal route can be blocked by adjacent obstacles with corners intersecting the route
 			if (map.getValue(neighbourCoord) == 1 ||
 				isDiagonal[i] && (map.getValue(Vector2i(neighbourCoord.x, current->coord.y)) == 1 || map.getValue(Vector2i(current->coord.x, neighbourCoord.y)) == 1))
-			{ continue; }
+			{
+				continue;
+			}
 
 			// If the neighbour is on the closed list, skip it
 			if (closedSet.contains(neighbourCoord)) { continue; }
@@ -112,28 +114,22 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
 		}
 	}
 
-	if (deleteSets)
+	if (mapDisplayer != nullptr)
 	{
-		openSet.deleteAll();
-		closedSet.deleteAll();
+		mapDisplayer->loadMap(map);
+		for (auto node : *openSet.getSet())
+		{
+			mapDisplayer->setChar(node->coord, 'o');
+			mapDisplayer->setColour(node->coord, 0x0004);
+		}
+		for (auto node : *closedSet.getSet())
+		{
+			mapDisplayer->setChar(node->coord, '.');
+			mapDisplayer->setColour(node->coord, 0x0004);
+		}
+		mapDisplayer->loadPath(path);
+		mapDisplayer->print();
 	}
-
-	return path;
-}
-
-
-Path AStarPathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer)
-{
-	// deleteSets is set to false so the sets can be drawn on the map
-	deleteSets = false;
-	Path path = generatePath(map, start, end);
-	deleteSets = true;
-
-	mapDisplayer.loadMap(map);
-	mapDisplayer.drawAStarOpenSet(openSet);
-	mapDisplayer.drawAStarClosedSet(closedSet);
-	mapDisplayer.drawPath(path);
-	mapDisplayer.print();
 
 	openSet.deleteAll();
 	closedSet.deleteAll();

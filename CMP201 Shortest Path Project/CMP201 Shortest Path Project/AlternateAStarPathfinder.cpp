@@ -15,7 +15,7 @@ AlternateAStarPathfinder::~AlternateAStarPathfinder()
 }
 
 
-Path AlternateAStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end)
+Path AlternateAStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end, MapDisplayer* mapDisplayer)
 {
 	// This is used for calculating position hashes
 	closedSet.setMapWidth(map.getSize().x);
@@ -114,28 +114,22 @@ Path AlternateAStarPathfinder::generatePath(const Map& map, Vector2i start, Vect
 		}
 	}
 
-	if (deleteSets)
+	if (mapDisplayer != nullptr)
 	{
-		openSet.deleteAll();
-		closedSet.deleteAll();
+		mapDisplayer->loadMap(map);
+		for (auto node : *openSet.getSet())
+		{
+			mapDisplayer->setChar(node->coord, 'o');
+			mapDisplayer->setColour(node->coord, 0x0004);
+		}
+		for (auto node : *closedSet.getSet())
+		{
+			mapDisplayer->setChar(node->coord, '.');
+			mapDisplayer->setColour(node->coord, 0x0004);
+		}
+		mapDisplayer->loadPath(path);
+		mapDisplayer->print();
 	}
-
-	return path;
-}
-
-
-Path AlternateAStarPathfinder::generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer)
-{
-	// deleteSets is set to false so the sets can be drawn on the map
-	deleteSets = false;
-	Path path = generatePath(map, start, end);
-	deleteSets = true;
-
-	mapDisplayer.loadMap(map);
-	//mapDisplayer.drawAStarOpenSet(openSet);
-	//mapDisplayer.drawAStarClosedSet(closedSet);
-	mapDisplayer.drawPath(path);
-	mapDisplayer.print();
 
 	openSet.deleteAll();
 	closedSet.deleteAll();

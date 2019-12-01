@@ -37,7 +37,7 @@ void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 	Vector2i end = pickEmptyCoord(map, start);
 
 	// Generate path
-	Path path = getPathfinder(algorithm)->generateAndDrawPath(map, start, end, mapDisplayer);
+	Path path = getPathfinder(algorithm)->generatePath(map, start, end, &mapDisplayer);
 }
 
 
@@ -161,7 +161,7 @@ Pathfinder* AlgorithmTester::getPathfinder(Algorithm algorithm)
 	switch (algorithm)
 	{
 	case Lee:
-		break;
+		return &leePathfinder;
 	case Dijkstra:
 		break;
 	case AStar:

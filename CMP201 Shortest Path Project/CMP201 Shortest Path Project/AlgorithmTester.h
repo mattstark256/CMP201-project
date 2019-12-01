@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MapDisplayer.h"
+#include "LeePathfinder.h"
 #include "AStarPathfinder.h"
 #include "AlternateAStarPathfinder.h"
 
@@ -20,6 +21,7 @@ public:
 
 private:
 	MapDisplayer mapDisplayer;
+	LeePathfinder leePathfinder;
 	AStarPathfinder aStarPathfinder;
 	AlternateAStarPathfinder alternateAStarPathfinder;
 

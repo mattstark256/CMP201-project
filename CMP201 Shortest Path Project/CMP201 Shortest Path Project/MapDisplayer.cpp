@@ -15,17 +15,17 @@ MapDisplayer::MapDisplayer()
 
 MapDisplayer::~MapDisplayer()
 {
-	delete[] charBuffer;
+	delete[] intBuffer;
 	delete[] colourBuffer;
 }
 
 
 void MapDisplayer::loadMap(const Map& map)
 {
-	delete[] charBuffer;
+	delete[] intBuffer;
 	delete[] colourBuffer;
 	bufferSize = map.getSize();
-	charBuffer = new char[bufferSize.x * bufferSize.y]{};
+	intBuffer = new int[bufferSize.x * bufferSize.y]{};
 	colourBuffer = new int[bufferSize.x * bufferSize.y]{};
 
 	for (int y = 0; y < bufferSize.y; y++)
@@ -42,7 +42,7 @@ void MapDisplayer::loadMap(const Map& map)
 }
 
 
-void MapDisplayer::drawPath(const Path& path)
+void MapDisplayer::loadPath(const Path& path)
 {
 	const std::vector<Vector2i>* pathCoords = path.getPathCoords();
 	for (auto coord : *pathCoords)
@@ -59,25 +59,21 @@ void MapDisplayer::drawPath(const Path& path)
 }
 
 
-void MapDisplayer::drawAStarOpenSet(const AStarOpenSet& openSet)
+void MapDisplayer::setChar(Vector2i coord, char character)
 {
-	const std::vector<AStarNode*>* set = openSet.getSet();
-	for (auto node : *set)
-	{
-		setChar(node->coord, 'o');
-		setColour(node->coord, FOREGROUND_RED);
-	}
+	intBuffer[coord.y * bufferSize.x + coord.x] = (int)character;
 }
 
 
-void MapDisplayer::drawAStarClosedSet(const AStarClosedSet& closedSet)
+void MapDisplayer::setInt(Vector2i coord, int i)
 {
-	const std::vector<AStarNode*>* set = closedSet.getSet();
-	for (auto node : *set)
-	{
-		setChar(node->coord, '.');
-		setColour(node->coord, FOREGROUND_RED);
-	}
+	intBuffer[coord.y * bufferSize.x + coord.x] = i + 128;
+}
+
+
+void MapDisplayer::setColour(Vector2i coord, int colour)
+{
+	colourBuffer[coord.y * bufferSize.x + coord.x] = colour;
 }
 
 
@@ -103,8 +99,15 @@ void MapDisplayer::print()
 		{
 			int i = y * bufferSize.x + x;
 			SetConsoleTextAttribute(hConsole, colourBuffer[i]);
-			if (charBuffer[i] == 0) { cout << "  "; }
-			else { cout << " " << charBuffer[i]; }
+			int j = intBuffer[i];
+			// If it's a char
+			if (j < 128) { cout << " " << (char)j; }
+			// If it's a single digit int
+			else if (j < 138) { cout << " " << j - 128; }
+			// If it's a double digit int
+			else if (j < 228) { cout << j - 128; }
+			// If it's too large
+			else { cout << " ?"; }
 		}
 
 		SetConsoleTextAttribute(hConsole, BORDER_COLOUR);
@@ -122,16 +125,4 @@ void MapDisplayer::print()
 
 	SetConsoleTextAttribute(hConsole, DEFAULT_COLOUR);
 	cout << endl;
-}
-
-
-void MapDisplayer::setChar(Vector2i coord, char character)
-{
-	charBuffer[coord.y * bufferSize.x + coord.x] = character;
-}
-
-
-void MapDisplayer::setColour(Vector2i coord, int colour)
-{
-	colourBuffer[coord.y * bufferSize.x + coord.x] = colour;
 }

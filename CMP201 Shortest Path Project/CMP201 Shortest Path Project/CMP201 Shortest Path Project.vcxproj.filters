@@ -66,6 +66,9 @@
     <ClCompile Include="AlternateAStarClosedSet.cpp">
       <Filter>Source Files\Pathfinders</Filter>
     </ClCompile>
+    <ClCompile Include="LeePathfinder.cpp">
+      <Filter>Source Files\Pathfinders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UserInterface.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files\Pathfinders</Filter>
     </ClInclude>
     <ClInclude Include="AlternateAStarClosedSet.h">
+      <Filter>Header Files\Pathfinders</Filter>
+    </ClInclude>
+    <ClInclude Include="LeePathfinder.h">
       <Filter>Header Files\Pathfinders</Filter>
     </ClInclude>
   </ItemGroup>

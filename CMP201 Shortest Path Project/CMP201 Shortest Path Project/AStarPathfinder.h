@@ -15,13 +15,11 @@ public:
 	AStarPathfinder();
 	~AStarPathfinder();
 
-	Path generatePath(const Map& map, Vector2i start, Vector2i end) override;
-	Path generateAndDrawPath(const Map& map, Vector2i start, Vector2i end, MapDisplayer& mapDisplayer) override;
+	Path generatePath(const Map& map, Vector2i start, Vector2i end, MapDisplayer* mapDisplayer = nullptr) override;
 
 private:
 	AStarOpenSet openSet;
 	AStarClosedSet closedSet;
-	bool deleteSets = true;
 
 	float findHeuristic(Vector2i a, Vector2i b);
 

@@ -2,8 +2,7 @@
 
 #include "Map.h"
 #include "Path.h"
-#include "AStarOpenSet.h"
-#include "AStarClosedSet.h"
+#include <string>
 
 
 class MapDisplayer
@@ -13,17 +12,17 @@ public:
 	~MapDisplayer();
 
 	void loadMap(const Map& map);
-	void drawPath(const Path& path);
-	void drawAStarOpenSet(const AStarOpenSet& openSet);
-	void drawAStarClosedSet(const AStarClosedSet& openSet);
+	void loadPath(const Path& path);
+	void setChar(Vector2i coord, char character);
+	void setInt(Vector2i coord, int i);
+	void setColour(Vector2i coord, int colour);
+
 	void print();
 
 private:
 	Vector2i bufferSize;
-	char* charBuffer;
+	// Values below 128 in the int buffer refer to ASCII chars. Values 128 and up represent numbers, starting from 128 = 0.
+	int* intBuffer;
 	int* colourBuffer;
-
-	void setChar(Vector2i coords, char character);
-	void setColour(Vector2i coords, int colour);
 };
 
