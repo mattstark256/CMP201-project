@@ -51,32 +51,31 @@ void AStarOpenSet::popBack()
 // Insert the node into the open set in descending order of f
 void AStarOpenSet::insertOrdered(AStarNode* node)
 {
-	//for (std::vector<AStarNode*>::iterator it = set.begin(); it != set.end(); it++)
-	//{
-	//	if ((*it)->f < node->f)
-	//	{
-	//		set.insert(it, node);
-	//		return;
-	//	}
-	//}
-	//set.push_back(node);
+	for (std::vector<AStarNode*>::iterator it = set.begin(); it != set.end(); it++)
+	{
+		if ((*it)->f < node->f)
+		{
+			set.insert(it, node);
+			return;
+		}
+	}
+	set.push_back(node);
 
-	// Binary search is slower up until around 200x200 maps
-	auto it = std::lower_bound(set.begin(), set.end(), node->f, [](AStarNode * lhs, float rhs) -> bool { return lhs->f > rhs; });
-	set.insert(it, node);
+	// This seems to perform slightly worse
+	//auto it = std::lower_bound(set.begin(), set.end(), node->f, [](AStarNode * lhs, float rhs) -> bool { return lhs->f > rhs; });
+	//set.insert(it, node);
 }
 
 
 std::vector<AStarNode*>::iterator AStarOpenSet::findNode(Vector2i coord)
 {
-	for (auto it = set.begin(); it != set.end(); it++)
-	{
-		if ((*it)->coord == coord) return it;
-	}
-	return set.end();
+	//for (auto it = set.begin(); it != set.end(); it++)
+	//{
+	//	if ((*it)->coord == coord) return it;
+	//}
+	//return set.end();
 
-	// find_if seems to be slower
-	//return find_if(set.begin(), set.end(), [coord](AStarNode * s) { return s->coord == coord; });
+	return find_if(set.begin(), set.end(), [coord](AStarNode * s) { return s->coord == coord; });
 }
 
 

@@ -3,6 +3,7 @@
 #include "Map.h"
 #include <algorithm> // std::sort
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 // Clock stuff
@@ -24,9 +25,7 @@ AlgorithmTester::~AlgorithmTester()
 
 void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 {
-	cout << "Visualizing the ";
-	printAlgorithmName(algorithm);
-	cout << " algorithm with a map size of " << mapSize << ". Start and end points will be randomly selected.\n\n";
+	cout << "Visualizing the " << getAlgorithmName(algorithm) << " algorithm with a map size of " << mapSize << ". Start and end points will be randomly selected.\n\n";
 
 	// Generate map
 	Map map(Vector2i(mapSize, mapSize));
@@ -38,14 +37,16 @@ void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 
 	// Generate path
 	Path path = getPathfinder(algorithm)->generatePath(map, start, end, &mapDisplayer);
+
+	ofstream my_file("Test Results/hello.csv");
+	my_file << "Hello, world!\n";
+	my_file << "Goodbye, world!\n";
 }
 
 
 void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, int routes, int iterations)
 {
-	cout << "Testing the ";
-	printAlgorithmName(algorithm);
-	cout << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
+	cout << "Testing the " << getAlgorithmName(algorithm) << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
 
 	vector<float> times;
 
@@ -96,10 +97,7 @@ void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, 
 
 void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm algorithm2, int mapSize, int maps, int routes, int iterations)
 {
-	cout << "Testing the ";
-	printAlgorithmName(algorithm1);
-	cout << " algorithm against the ";
-	printAlgorithmName(algorithm2);
+	cout << "Testing the " << getAlgorithmName(algorithm1) << " algorithm against the " << getAlgorithmName(algorithm2);
 	cout << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
 
 	vector<float> times1;
@@ -157,34 +155,22 @@ void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm a
 
 	int numberOfTests = maps * routes;
 
-	cout << "Median time for ";
-	printAlgorithmName(algorithm1);
-	cout << " algorithm: " << times1[times1.size() / 2] << "ms" << endl;
+	cout << "Median time for " << getAlgorithmName(algorithm1) << " algorithm: " << times1[times1.size() / 2] << "ms" << endl;
 	cout << "It was faster in " << wins1 << " out of " << numberOfTests << " tests." << endl;
-	cout << "Median time for ";
-	printAlgorithmName(algorithm2);
-	cout << " algorithm: " << times2[times2.size() / 2] << "ms" << endl;
+	cout << "Median time for " << getAlgorithmName(algorithm2) << " algorithm: " << times2[times2.size() / 2] << "ms" << endl;
 	cout << "It was faster in " << wins2 << " out of " << numberOfTests << " tests." << endl;
 }
 
 
-void AlgorithmTester::testAlgorithmAgainstMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
+void AlgorithmTester::testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
 {
-	//cout << "Testing the ";
-	//printAlgorithmName(algorithm);
-	//cout << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
-
 	// Create an array of vectors of times. Each vector represents one map size.
-	vector<float>* times = new vector<float>[numberOfMapSizes]{};
-	//int* distances = new int[map.getSize().x * map.getSize().y]{};
+	vector<float>* times = new vector<float>[numberOfMapSizes] {};
 
 	for (int m = 0; m < mapsPerSize; m++)
 	{
 		for (int s = 0; s < numberOfMapSizes; s++)
 		{
-			//cout << "M";
-			//cout << "Generated a map with size " << mapSize << ".\n";
-
 			int mapSize = firstMapSize + s * mapSizeInterval;
 			cout << "Map " << m * numberOfMapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
 
@@ -218,18 +204,98 @@ void AlgorithmTester::testAlgorithmAgainstMapSize(Algorithm algorithm, int numbe
 	}
 	cout << endl;
 
+	// Create file
+	string filePath = "Test Results/" + getAlgorithmName(algorithm) + ".csv";
+	ofstream my_file(filePath);
+	cout << "Writing results to " << filePath << endl;
+
+	// Write to file
+	my_file << "Time to find Shortest Path vs. Map Size" << endl;
+	my_file << "Map Size, " << getAlgorithmName(algorithm) << endl;
 	for (int s = 0; s < numberOfMapSizes; s++)
 	{
 		int mapSize = firstMapSize + s * mapSizeInterval;
 		sort(times[s].begin(), times[s].end());
-		cout << "Median time for map size " << mapSize << " is " << times[s][times[s].size() / 2] << "ms." << endl;
+		float median = times[s][times[s].size() / 2];
+		my_file << mapSize << ", " << median << endl;
 	}
 
 	delete[] times;
+}
 
-	//ofstream my_file("hello.csv");
-	//my_file << "Hello, world!\n";
-	//my_file << "Goodbye, world!\n";
+
+void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm algorithm1, Algorithm algorithm2, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
+{
+	// Create an array of vectors of times. Each vector represents one map size.
+	vector<float>* times1 = new vector<float>[numberOfMapSizes] {};
+	vector<float>* times2 = new vector<float>[numberOfMapSizes] {};
+
+	for (int m = 0; m < mapsPerSize; m++)
+	{
+		for (int s = 0; s < numberOfMapSizes; s++)
+		{
+			int mapSize = firstMapSize + s * mapSizeInterval;
+			cout << "Map " << m * numberOfMapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
+
+			// Generate map
+			Map map(Vector2i(mapSize, mapSize));
+			map.generateObstacles();
+
+			for (int r = 0; r < routes; r++)
+			{
+				cout << ".";
+
+				// Generate start and end coords
+				Vector2i start = pickEmptyCoord(map);
+				Vector2i end = pickEmptyCoord(map, start);
+
+				// Generate path using first algorithm
+				the_clock::time_point startTime1 = the_clock::now();
+				for (int i = 0; i < iterations; i++)
+				{
+					getPathfinder(algorithm1)->generatePath(map, start, end);
+				}
+				the_clock::time_point endTime1 = the_clock::now();
+				float time_taken1 = duration_cast<milliseconds>(endTime1 - startTime1).count();
+				time_taken1 /= iterations;
+				times1[s].push_back(time_taken1);
+
+				// Generate path using second algorithm
+				the_clock::time_point startTime2 = the_clock::now();
+				for (int i = 0; i < iterations; i++)
+				{
+					getPathfinder(algorithm2)->generatePath(map, start, end);
+				}
+				the_clock::time_point endTime2 = the_clock::now();
+				float time_taken2 = duration_cast<milliseconds>(endTime2 - startTime2).count();
+				time_taken2 /= iterations;
+				times2[s].push_back(time_taken2);
+			}
+			cout << endl;
+		}
+	}
+	cout << endl;
+
+	// Create file
+	string filePath = "Test Results/" + getAlgorithmName(algorithm1) + " vs " + getAlgorithmName(algorithm2) + ".csv";
+	ofstream my_file(filePath);
+	cout << "Writing results to " << filePath << endl;
+
+	// Write to file
+	my_file << "Time to find Shortest Path vs. Map Size" << endl;
+	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
+	for (int s = 0; s < numberOfMapSizes; s++)
+	{
+		int mapSize = firstMapSize + s * mapSizeInterval;
+		sort(times1[s].begin(), times1[s].end());
+		float median1 = times1[s][times1[s].size() / 2];
+		sort(times2[s].begin(), times2[s].end());
+		float median2 = times2[s][times2[s].size() / 2];
+		my_file << mapSize << ", " << median1 << ", " << median2 << endl;
+	}
+
+	delete[] times1;
+	delete[] times2;
 }
 
 
@@ -251,22 +317,18 @@ Pathfinder* AlgorithmTester::getPathfinder(Algorithm algorithm)
 }
 
 
-void AlgorithmTester::printAlgorithmName(Algorithm algorithm)
+string AlgorithmTester::getAlgorithmName(Algorithm algorithm)
 {
 	switch (algorithm)
 	{
 	case Lee:
-		cout << "Lee";
-		break;
+		return "Lee";
 	case Dijkstra:
-		cout << "Dijkstra";
-		break;
+		return "Dijkstra";
 	case AStar:
-		cout << "A*";
-		break;
+		return "A Star";
 	case AStarAlternate:
-		cout << "A* alternate";
-		break;
+		return "A Star Alternate";
 	default:
 		break;
 	}

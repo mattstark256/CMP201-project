@@ -18,7 +18,8 @@ public:
 
 	void testAlgorithm(Algorithm algorithm, int mapSize, int maps, int routes, int iterations);
 	void testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm algorithm2, int mapSize, int maps, int routes, int iterations);
-	void testAlgorithmAgainstMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations);
+	void testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations);
+	void testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm algorithm1, Algorithm algorithm2, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations);
 
 private:
 	MapDisplayer mapDisplayer;
@@ -27,7 +28,7 @@ private:
 	AlternateAStarPathfinder alternateAStarPathfinder;
 
 	Pathfinder* getPathfinder(Algorithm algorithm);
-	void printAlgorithmName(Algorithm algorithm);
+	std::string getAlgorithmName(Algorithm algorithm);
 	Vector2i pickEmptyCoord(const Map& map);
 	Vector2i pickEmptyCoord(const Map& map, Vector2i invalidCoord);
 };
