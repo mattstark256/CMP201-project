@@ -17,6 +17,7 @@ private:
 	void visualizeAlgorithm();
 	void testAlgorithmPerformance();
 	void testAlgorithmPerformanceHeadToHead();
+	void testAlgorithmPerformanceAgainstMapSize();
 
 	int getIntInput();
 	Algorithm selectAlgorithm();

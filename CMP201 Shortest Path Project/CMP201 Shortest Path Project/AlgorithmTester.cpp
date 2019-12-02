@@ -51,7 +51,7 @@ void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, 
 
 	for (int m = 0; m < maps; m++)
 	{
-		cout << "M";
+		cout << "Map " << m + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
 
 		// Generate map
 		Map map(Vector2i(mapSize, mapSize));
@@ -59,7 +59,7 @@ void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, 
 
 		for (int r = 0; r < routes; r++)
 		{
-			cout << "R";
+			cout << ".";
 
 			// Generate start and end coords
 			Vector2i start = pickEmptyCoord(map);
@@ -73,12 +73,14 @@ void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, 
 			}
 			the_clock::time_point endTime = the_clock::now();
 
+			// Get the average time taken for this specific path. This reduces ms rounding error.
 			float time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 			time_taken /= iterations;
 			times.push_back(time_taken);
 		}
+		cout << endl;
 	}
-	cout << "\n\n";
+	cout << endl;
 
 	sort(times.begin(), times.end());
 
@@ -102,10 +104,12 @@ void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm a
 
 	vector<float> times1;
 	vector<float> times2;
+	int wins1 = 0;
+	int wins2 = 0;
 
 	for (int m = 0; m < maps; m++)
 	{
-		cout << "M";
+		cout << "Map " << m + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
 
 		// Generate map
 		Map map(Vector2i(mapSize, mapSize));
@@ -113,7 +117,7 @@ void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm a
 
 		for (int r = 0; r < routes; r++)
 		{
-			cout << "R";
+			cout << ".";
 
 			// Generate start and end coords
 			Vector2i start = pickEmptyCoord(map);
@@ -140,19 +144,92 @@ void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm a
 			float time_taken2 = duration_cast<milliseconds>(endTime2 - startTime2).count();
 			time_taken2 /= iterations;
 			times2.push_back(time_taken2);
+
+			if (time_taken1 < time_taken2) wins1++;
+			else if (time_taken2 < time_taken1) wins2++;
 		}
+		cout << endl;
 	}
-	cout << "\n\n";
+	cout << endl;
 
 	sort(times1.begin(), times1.end());
 	sort(times2.begin(), times2.end());
 
+	int numberOfTests = maps * routes;
+
 	cout << "Median time for ";
 	printAlgorithmName(algorithm1);
 	cout << " algorithm: " << times1[times1.size() / 2] << "ms" << endl;
+	cout << "It was faster in " << wins1 << " out of " << numberOfTests << " tests." << endl;
 	cout << "Median time for ";
 	printAlgorithmName(algorithm2);
 	cout << " algorithm: " << times2[times2.size() / 2] << "ms" << endl;
+	cout << "It was faster in " << wins2 << " out of " << numberOfTests << " tests." << endl;
+}
+
+
+void AlgorithmTester::testAlgorithmAgainstMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
+{
+	//cout << "Testing the ";
+	//printAlgorithmName(algorithm);
+	//cout << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
+
+	// Create an array of vectors of times. Each vector represents one map size.
+	vector<float>* times = new vector<float>[numberOfMapSizes]{};
+	//int* distances = new int[map.getSize().x * map.getSize().y]{};
+
+	for (int m = 0; m < mapsPerSize; m++)
+	{
+		for (int s = 0; s < numberOfMapSizes; s++)
+		{
+			//cout << "M";
+			//cout << "Generated a map with size " << mapSize << ".\n";
+
+			int mapSize = firstMapSize + s * mapSizeInterval;
+			cout << "Map " << m * numberOfMapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
+
+			// Generate map
+			Map map(Vector2i(mapSize, mapSize));
+			map.generateObstacles();
+
+			for (int r = 0; r < routes; r++)
+			{
+				cout << ".";
+
+				// Generate start and end coords
+				Vector2i start = pickEmptyCoord(map);
+				Vector2i end = pickEmptyCoord(map, start);
+
+				// Generate path
+				the_clock::time_point startTime = the_clock::now();
+				for (int i = 0; i < iterations; i++)
+				{
+					getPathfinder(algorithm)->generatePath(map, start, end);
+				}
+				the_clock::time_point endTime = the_clock::now();
+
+				// Get the average time taken for this specific path. This reduces ms rounding error.
+				float time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+				time_taken /= iterations;
+				times[s].push_back(time_taken);
+			}
+			cout << endl;
+		}
+	}
+	cout << endl;
+
+	for (int s = 0; s < numberOfMapSizes; s++)
+	{
+		int mapSize = firstMapSize + s * mapSizeInterval;
+		sort(times[s].begin(), times[s].end());
+		cout << "Median time for map size " << mapSize << " is " << times[s][times[s].size() / 2] << "ms." << endl;
+	}
+
+	delete[] times;
+
+	//ofstream my_file("hello.csv");
+	//my_file << "Hello, world!\n";
+	//my_file << "Goodbye, world!\n";
 }
 
 
