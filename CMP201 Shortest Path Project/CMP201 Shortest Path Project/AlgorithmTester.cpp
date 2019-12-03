@@ -87,11 +87,24 @@ void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, 
 
 	cout << "Median time is " << times[times.size() / 2] << "ms." << endl;
 
-	//// Print all the times
-	//for (int i = 0; i < times.size(); i++)
-	//{
-	//	cout << times[i] << "ms" << endl;
-	//}
+	// Create file
+	string filePath = "Test Results/" + getAlgorithmName(algorithm) + ".csv";
+	ofstream my_file(filePath);
+	cout << "Writing results to " << filePath << endl;
+
+	// Write details of test to file
+	my_file << "Maps, " << maps << endl;
+	my_file << "Routes per map, " << routes << endl;
+	my_file << "iterations per route, " << iterations << endl;
+
+	// Write times to file
+	my_file << endl;
+	my_file << "Times to find Shortest Path" << endl;
+	my_file << getAlgorithmName(algorithm) << endl;
+	for (int i = 0; i < maps * routes; i++)
+	{
+		my_file << times[i] << endl;
+	}
 }
 
 
@@ -159,6 +172,25 @@ void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm a
 	cout << "It was faster in " << wins1 << " out of " << numberOfTests << " tests." << endl;
 	cout << "Median time for " << getAlgorithmName(algorithm2) << " algorithm: " << times2[times2.size() / 2] << "ms" << endl;
 	cout << "It was faster in " << wins2 << " out of " << numberOfTests << " tests." << endl;
+
+	// Create file
+	string filePath = "Test Results/" + getAlgorithmName(algorithm1) + " vs " + getAlgorithmName(algorithm2) + ".csv";
+	ofstream my_file(filePath);
+	cout << "Writing results to " << filePath << endl;
+
+	// Write details of test to file
+	my_file << "Maps, " << maps << endl;
+	my_file << "Routes per map, " << routes << endl;
+	my_file << "iterations per route, " << iterations << endl;
+
+	// Write times to file
+	my_file << endl;
+	my_file << "Times to find Shortest Path" << endl;
+	my_file << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
+	for (int i = 0; i < numberOfTests; i++)
+	{
+		my_file << times1[i] << ", " << times2[i] << endl;
+	}
 }
 
 
@@ -209,8 +241,14 @@ void AlgorithmTester::testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int
 	ofstream my_file(filePath);
 	cout << "Writing results to " << filePath << endl;
 
-	// Write to file
-	my_file << "Time to find Shortest Path vs. Map Size" << endl;
+	// Write details of test to file
+	my_file << "Maps per size, " << mapsPerSize << endl;
+	my_file << "Routes per map, " << routes << endl;
+	my_file << "iterations per route, " << iterations << endl;
+
+	// Write median times to file
+	my_file << endl;
+	my_file << "Median Time to find Shortest Path vs. Map Size" << endl;
 	my_file << "Map Size, " << getAlgorithmName(algorithm) << endl;
 	for (int s = 0; s < numberOfMapSizes; s++)
 	{
@@ -226,10 +264,11 @@ void AlgorithmTester::testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int
 
 void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm algorithm1, Algorithm algorithm2, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
 {
-	// Create an array of vectors of times. Each vector represents one map size.
+	// Create an array of vectors of times. Each vector represents the times for one map size.
 	vector<float>* times1 = new vector<float>[numberOfMapSizes] {};
 	vector<float>* times2 = new vector<float>[numberOfMapSizes] {};
 
+	// Create an array of wins. Each int represent the number of wins for one map size.
 	int* wins1 = new int[numberOfMapSizes] {};
 	int* wins2 = new int[numberOfMapSizes] {};
 
@@ -287,7 +326,13 @@ void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm alg
 	ofstream my_file(filePath);
 	cout << "Writing results to " << filePath << endl;
 
+	// Write details of test to file
+	my_file << "Maps per size, " << mapsPerSize << endl;
+	my_file << "Routes per map, " << routes << endl;
+	my_file << "iterations per route, " << iterations << endl;
+
 	// Write median times to file
+	my_file << endl;
 	my_file << "Median Time to find Shortest Path vs. Map Size" << endl;
 	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
 	for (int s = 0, mapSize = firstMapSize; s < numberOfMapSizes; s++, mapSize += mapSizeInterval)
@@ -300,6 +345,7 @@ void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm alg
 	}
 
 	// Write win percentages to file
+	my_file << endl;
 	my_file << "Percentage of Wins vs. Map Size" << endl;
 	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
 	for (int s = 0, mapSize = firstMapSize; s < numberOfMapSizes; s++, mapSize+= mapSizeInterval)
@@ -312,6 +358,8 @@ void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm alg
 
 	delete[] times1;
 	delete[] times2;
+	delete[] wins1;
+	delete[] wins2;
 }
 
 

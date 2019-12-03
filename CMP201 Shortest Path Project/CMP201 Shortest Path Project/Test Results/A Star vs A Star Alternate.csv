@@ -1,7 +1,29 @@
-Time to find Shortest Path vs. Map Size
+Maps per size, 10
+Routes per map, 20
+iterations per route, 20
+
+Median Time to find Shortest Path vs. Map Size
 Map Size, A Star, A Star Alternate
+50, 0, 0
 100, 0.3, 0.3
-200, 1.6, 1.6
-300, 3.9, 3.7
-400, 7.3, 6.8
-500, 16.5, 15.1
+150, 0.8, 0.9
+200, 1.4, 1.5
+250, 2.2, 2.4
+300, 3.7, 3.9
+350, 6.4, 6.9
+400, 8, 8.6
+450, 12.4, 13.2
+500, 14.8, 15.8
+
+Percentage of Wins vs. Map Size
+Map Size, A Star, A Star Alternate
+50, 12, 0.5
+100, 38, 3
+150, 62, 1.5
+200, 72.5, 1
+250, 79.5, 1
+300, 87.5, 1
+350, 86, 0.5
+400, 90, 2
+450, 88, 1.5
+500, 82.5, 6.5

@@ -48,9 +48,10 @@ void DijkstraOpenSet::popBack()
 }
 
 
-// Insert the node into the open set in descending order of f
+// Insert the node into the open set in descending order of cost
 void DijkstraOpenSet::insertOrdered(DijkstraNode* node)
 {
+	// Linear search
 	for (std::vector<DijkstraNode*>::iterator it = set.begin(); it != set.end(); it++)
 	{
 		if ((*it)->cost < node->cost)
@@ -61,8 +62,8 @@ void DijkstraOpenSet::insertOrdered(DijkstraNode* node)
 	}
 	set.push_back(node);
 
-	// This seems to perform slightly worse
-	//auto it = std::lower_bound(set.begin(), set.end(), node->f, [](AStarNode * lhs, float rhs) -> bool { return lhs->f > rhs; });
+	// Binary search
+	//auto it = std::lower_bound(set.begin(), set.end(), node->f, [](AStarNode* lhs, float rhs) -> bool { return lhs->f > rhs; });
 	//set.insert(it, node);
 }
 
@@ -75,7 +76,7 @@ std::vector<DijkstraNode*>::iterator DijkstraOpenSet::findNode(Vector2i coord)
 	//}
 	//return set.end();
 
-	return find_if(set.begin(), set.end(), [coord](DijkstraNode* s) { return s->coord == coord; });
+	return find_if(set.begin(), set.end(), [coord](DijkstraNode* n) { return n->coord == coord; });
 }
 
 
