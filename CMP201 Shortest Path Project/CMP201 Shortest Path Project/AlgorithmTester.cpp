@@ -230,6 +230,9 @@ void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm alg
 	vector<float>* times1 = new vector<float>[numberOfMapSizes] {};
 	vector<float>* times2 = new vector<float>[numberOfMapSizes] {};
 
+	int* wins1 = new int[numberOfMapSizes] {};
+	int* wins2 = new int[numberOfMapSizes] {};
+
 	for (int m = 0; m < mapsPerSize; m++)
 	{
 		for (int s = 0; s < numberOfMapSizes; s++)
@@ -270,6 +273,9 @@ void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm alg
 				float time_taken2 = duration_cast<milliseconds>(endTime2 - startTime2).count();
 				time_taken2 /= iterations;
 				times2[s].push_back(time_taken2);
+
+				if (time_taken1 < time_taken2) wins1[s]++;
+				else if (time_taken2 < time_taken1) wins2[s]++;
 			}
 			cout << endl;
 		}
@@ -281,17 +287,27 @@ void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm alg
 	ofstream my_file(filePath);
 	cout << "Writing results to " << filePath << endl;
 
-	// Write to file
-	my_file << "Time to find Shortest Path vs. Map Size" << endl;
+	// Write median times to file
+	my_file << "Median Time to find Shortest Path vs. Map Size" << endl;
 	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
-	for (int s = 0; s < numberOfMapSizes; s++)
+	for (int s = 0, mapSize = firstMapSize; s < numberOfMapSizes; s++, mapSize += mapSizeInterval)
 	{
-		int mapSize = firstMapSize + s * mapSizeInterval;
 		sort(times1[s].begin(), times1[s].end());
 		float median1 = times1[s][times1[s].size() / 2];
 		sort(times2[s].begin(), times2[s].end());
 		float median2 = times2[s][times2[s].size() / 2];
 		my_file << mapSize << ", " << median1 << ", " << median2 << endl;
+	}
+
+	// Write win percentages to file
+	my_file << "Percentage of Wins vs. Map Size" << endl;
+	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
+	for (int s = 0, mapSize = firstMapSize; s < numberOfMapSizes; s++, mapSize+= mapSizeInterval)
+	{
+		int testsPerSize = mapsPerSize * routes;
+		float win1 = (float)wins1[s] / testsPerSize * 100;
+		float win2 = (float)wins2[s] / testsPerSize * 100;
+		my_file << mapSize << ", " << win1 << ", " << win2 << endl;
 	}
 
 	delete[] times1;
@@ -306,7 +322,7 @@ Pathfinder* AlgorithmTester::getPathfinder(Algorithm algorithm)
 	case Lee:
 		return &leePathfinder;
 	case Dijkstra:
-		break;
+		return &dijkstraPathfinder;
 	case AStar:
 		return &aStarPathfinder;
 	case AStarAlternate:

@@ -19,6 +19,30 @@
     <Filter Include="Header Files\Pathfinders">
       <UniqueIdentifier>{1a3ffd1c-97bb-44be-a71d-c306df9fcb79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Pathfinders\A Star">
+      <UniqueIdentifier>{9eee4db2-19cf-4a95-a300-9107c28a7ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pathfinders\A Star Alternate">
+      <UniqueIdentifier>{ace25049-1db7-4cc1-8274-cbce061d6db6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pathfinders\Lee">
+      <UniqueIdentifier>{6029ee71-921c-44b2-b972-a8a73bb9eb4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pathfinders\A Star">
+      <UniqueIdentifier>{b2d82b8b-6493-468b-be4f-6bf51e900c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pathfinders\A Star Alternate">
+      <UniqueIdentifier>{3c10c03a-e766-44f4-a572-dd4d91ad66f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pathfinders\Lee">
+      <UniqueIdentifier>{3fb01b20-c9c9-49c8-ab56-9dd4653070b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pathfinders\Dijkstra">
+      <UniqueIdentifier>{7121469f-6e83-40d4-bcac-84caa9767332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pathfinders\Dijkstra">
+      <UniqueIdentifier>{61ef7ee0-b389-4432-b213-8b32f40517b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CMP201 Shortest Path Project.cpp">
@@ -33,9 +57,6 @@
     <ClCompile Include="Path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AStarPathfinder.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
-    </ClCompile>
     <ClCompile Include="Pathfinder.cpp">
       <Filter>Source Files\Pathfinders</Filter>
     </ClCompile>
@@ -45,29 +66,44 @@
     <ClCompile Include="MapDisplayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AStarNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarClosedSet.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarOpenSet.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
-    </ClCompile>
     <ClCompile Include="AlgorithmTester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AlternateAStarPathfinder.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
+    <ClCompile Include="AStarClosedSet.cpp">
+      <Filter>Source Files\Pathfinders\A Star</Filter>
     </ClCompile>
-    <ClCompile Include="AlternateAStarOpenSet.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
+    <ClCompile Include="AStarOpenSet.cpp">
+      <Filter>Source Files\Pathfinders\A Star</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarPathfinder.cpp">
+      <Filter>Source Files\Pathfinders\A Star</Filter>
     </ClCompile>
     <ClCompile Include="AlternateAStarClosedSet.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
+      <Filter>Source Files\Pathfinders\A Star Alternate</Filter>
+    </ClCompile>
+    <ClCompile Include="AlternateAStarOpenSet.cpp">
+      <Filter>Source Files\Pathfinders\A Star Alternate</Filter>
+    </ClCompile>
+    <ClCompile Include="AlternateAStarPathfinder.cpp">
+      <Filter>Source Files\Pathfinders\A Star Alternate</Filter>
     </ClCompile>
     <ClCompile Include="LeePathfinder.cpp">
-      <Filter>Source Files\Pathfinders</Filter>
+      <Filter>Source Files\Pathfinders\Lee</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarNode.cpp">
+      <Filter>Source Files\Pathfinders\A Star</Filter>
+    </ClCompile>
+    <ClCompile Include="DijkstraNode.cpp">
+      <Filter>Source Files\Pathfinders\Dijkstra</Filter>
+    </ClCompile>
+    <ClCompile Include="DijkstraClosedSet.cpp">
+      <Filter>Source Files\Pathfinders\Dijkstra</Filter>
+    </ClCompile>
+    <ClCompile Include="DijkstraOpenSet.cpp">
+      <Filter>Source Files\Pathfinders\Dijkstra</Filter>
+    </ClCompile>
+    <ClCompile Include="DijkstraPathfinder.cpp">
+      <Filter>Source Files\Pathfinders\Dijkstra</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,9 +116,6 @@
     <ClInclude Include="Path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AStarPathfinder.h">
-      <Filter>Header Files\Pathfinders</Filter>
-    </ClInclude>
     <ClInclude Include="Pathfinder.h">
       <Filter>Header Files\Pathfinders</Filter>
     </ClInclude>
@@ -92,32 +125,47 @@
     <ClInclude Include="MapDisplayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AStarNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AStarClosedSet.h">
-      <Filter>Header Files\Pathfinders</Filter>
-    </ClInclude>
-    <ClInclude Include="AStarOpenSet.h">
-      <Filter>Header Files\Pathfinders</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AlgorithmTester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AlternateAStarPathfinder.h">
-      <Filter>Header Files\Pathfinders</Filter>
+    <ClInclude Include="AStarClosedSet.h">
+      <Filter>Header Files\Pathfinders\A Star</Filter>
     </ClInclude>
-    <ClInclude Include="AlternateAStarOpenSet.h">
-      <Filter>Header Files\Pathfinders</Filter>
+    <ClInclude Include="AStarOpenSet.h">
+      <Filter>Header Files\Pathfinders\A Star</Filter>
+    </ClInclude>
+    <ClInclude Include="AStarPathfinder.h">
+      <Filter>Header Files\Pathfinders\A Star</Filter>
+    </ClInclude>
+    <ClInclude Include="AlternateAStarPathfinder.h">
+      <Filter>Header Files\Pathfinders\A Star Alternate</Filter>
     </ClInclude>
     <ClInclude Include="AlternateAStarClosedSet.h">
-      <Filter>Header Files\Pathfinders</Filter>
+      <Filter>Header Files\Pathfinders\A Star Alternate</Filter>
+    </ClInclude>
+    <ClInclude Include="AlternateAStarOpenSet.h">
+      <Filter>Header Files\Pathfinders\A Star Alternate</Filter>
     </ClInclude>
     <ClInclude Include="LeePathfinder.h">
-      <Filter>Header Files\Pathfinders</Filter>
+      <Filter>Header Files\Pathfinders\Lee</Filter>
+    </ClInclude>
+    <ClInclude Include="AStarNode.h">
+      <Filter>Header Files\Pathfinders\A Star</Filter>
+    </ClInclude>
+    <ClInclude Include="DijkstraNode.h">
+      <Filter>Header Files\Pathfinders\Dijkstra</Filter>
+    </ClInclude>
+    <ClInclude Include="DijkstraPathfinder.h">
+      <Filter>Header Files\Pathfinders\Dijkstra</Filter>
+    </ClInclude>
+    <ClInclude Include="DijkstraOpenSet.h">
+      <Filter>Header Files\Pathfinders\Dijkstra</Filter>
+    </ClInclude>
+    <ClInclude Include="DijkstraClosedSet.h">
+      <Filter>Header Files\Pathfinders\Dijkstra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -160,6 +160,10 @@
     <ClCompile Include="AStarPathfinder.cpp" />
     <ClCompile Include="AStarNode.cpp" />
     <ClCompile Include="CMP201 Shortest Path Project.cpp" />
+    <ClCompile Include="DijkstraClosedSet.cpp" />
+    <ClCompile Include="DijkstraNode.cpp" />
+    <ClCompile Include="DijkstraOpenSet.cpp" />
+    <ClCompile Include="DijkstraPathfinder.cpp" />
     <ClCompile Include="LeePathfinder.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapDisplayer.cpp" />
@@ -177,6 +181,10 @@
     <ClInclude Include="AStarOpenSet.h" />
     <ClInclude Include="AStarPathfinder.h" />
     <ClInclude Include="AStarNode.h" />
+    <ClInclude Include="DijkstraClosedSet.h" />
+    <ClInclude Include="DijkstraNode.h" />
+    <ClInclude Include="DijkstraOpenSet.h" />
+    <ClInclude Include="DijkstraPathfinder.h" />
     <ClInclude Include="LeePathfinder.h" />
     <ClInclude Include="MapDisplayer.h" />
     <ClInclude Include="resource.h" />

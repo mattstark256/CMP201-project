@@ -1,0 +1,14 @@
+Median Time to find Shortest Path vs. Map Size
+Map Size, Dijkstra, A Star
+50, 0.7, 0
+100, 2.7, 0.3
+150, 6.2, 0.7
+200, 15.6, 1.3
+250, 42.4, 3.2
+Percentage of Wins vs. Map Size
+Map Size, Dijkstra, A Star
+50, 0, 92
+100, 0, 96
+150, 0, 100
+200, 0, 100
+250, 0, 100

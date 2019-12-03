@@ -2,6 +2,7 @@
 
 #include "MapDisplayer.h"
 #include "LeePathfinder.h"
+#include "DijkstraPathfinder.h"
 #include "AStarPathfinder.h"
 #include "AlternateAStarPathfinder.h"
 
@@ -24,6 +25,7 @@ public:
 private:
 	MapDisplayer mapDisplayer;
 	LeePathfinder leePathfinder;
+	DijkstraPathfinder dijkstraPathfinder;
 	AStarPathfinder aStarPathfinder;
 	AlternateAStarPathfinder alternateAStarPathfinder;
 
