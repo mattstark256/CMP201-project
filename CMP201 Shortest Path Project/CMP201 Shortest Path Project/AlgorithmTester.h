@@ -16,11 +16,7 @@ public:
 	~AlgorithmTester();
 
 	void visualizeAlgorithm(Algorithm algorithm, int mapSize);
-
-	void testAlgorithm(Algorithm algorithm, int mapSize, int maps, int routes, int iterations);
-	void testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm algorithm2, int mapSize, int maps, int routes, int iterations);
-	void testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations);
-	void testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm algorithm1, Algorithm algorithm2, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations);
+	void benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routesPerMap, int testsPerRoute);
 
 private:
 	MapDisplayer mapDisplayer;

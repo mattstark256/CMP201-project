@@ -15,13 +15,9 @@ private:
 
 	void mainMenu();
 	void visualizeAlgorithm();
-	void testAlgorithmPerformance();
-	void testAlgorithmPerformanceHeadToHead();
-	void testAlgorithmPerformanceVsMapSize();
-	void testAlgorithmPerformanceVsMapSizeHeadToHead();
+	void benchmarkAlgorithms();
 
-	int getIntInput();
+	int getIntInput(int min, int max);
 	Algorithm selectAlgorithm();
-	void printAlgorithmName(Algorithm algorithm);
 };
 

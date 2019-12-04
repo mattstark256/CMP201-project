@@ -44,173 +44,39 @@ void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 }
 
 
-void AlgorithmTester::testAlgorithm(Algorithm algorithm, int mapSize, int maps, int routes, int iterations)
+void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routesPerMap, int testsPerRoute)
 {
-	cout << "Testing the " << getAlgorithmName(algorithm) << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
+	int numberOfAlgorithms = algorithms.size();
 
-	vector<float> times;
-
-	for (int m = 0; m < maps; m++)
+	// Create a array of arrays of vectors of floats.
+	// First array is for each algorithm, second is for each map size and the vector is for each measured time.
+	vector<float>** times = new vector<float>*[numberOfAlgorithms] {};
+	for (int i = 0; i < numberOfAlgorithms; i++)
 	{
-		cout << "Map " << m + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
-
-		// Generate map
-		Map map(Vector2i(mapSize, mapSize));
-		map.generateObstacles();
-
-		for (int r = 0; r < routes; r++)
-		{
-			cout << ".";
-
-			// Generate start and end coords
-			Vector2i start = pickEmptyCoord(map);
-			Vector2i end = pickEmptyCoord(map, start);
-
-			// Generate path
-			the_clock::time_point startTime = the_clock::now();
-			for (int i = 0; i < iterations; i++)
-			{
-				getPathfinder(algorithm)->generatePath(map, start, end);
-			}
-			the_clock::time_point endTime = the_clock::now();
-
-			// Get the average time taken for this specific path. This reduces ms rounding error.
-			float time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-			time_taken /= iterations;
-			times.push_back(time_taken);
-		}
-		cout << endl;
+		times[i] = new vector<float>[mapSizes] {};
 	}
-	cout << endl;
 
-	sort(times.begin(), times.end());
-
-	cout << "Median time is " << times[times.size() / 2] << "ms." << endl;
-
-	// Create file
-	string filePath = "Test Results/" + getAlgorithmName(algorithm) + ".csv";
-	ofstream my_file(filePath);
-	cout << "Writing results to " << filePath << endl;
-
-	// Write details of test to file
-	my_file << "Maps, " << maps << endl;
-	my_file << "Routes per map, " << routes << endl;
-	my_file << "iterations per route, " << iterations << endl;
-
-	// Write times to file
-	my_file << endl;
-	my_file << "Times to find Shortest Path" << endl;
-	my_file << getAlgorithmName(algorithm) << endl;
-	for (int i = 0; i < maps * routes; i++)
+	// Create a array of arrays of ints
+	// First array is for each algorithm, second is for each map size.
+	int** wins = new int*[numberOfAlgorithms] {};
+	for (int i = 0; i < numberOfAlgorithms; i++)
 	{
-		my_file << times[i] << endl;
+		wins[i] = new int[mapSizes] {};
 	}
-}
 
-
-void AlgorithmTester::testAlgorithmsHeadToHead(Algorithm algorithm1, Algorithm algorithm2, int mapSize, int maps, int routes, int iterations)
-{
-	cout << "Testing the " << getAlgorithmName(algorithm1) << " algorithm against the " << getAlgorithmName(algorithm2);
-	cout << " algorithm with a map size of " << mapSize << " over " << maps * routes * iterations << " iterations.\n\n";
-
-	vector<float> times1;
-	vector<float> times2;
-	int wins1 = 0;
-	int wins2 = 0;
-
-	for (int m = 0; m < maps; m++)
-	{
-		cout << "Map " << m + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
-
-		// Generate map
-		Map map(Vector2i(mapSize, mapSize));
-		map.generateObstacles();
-
-		for (int r = 0; r < routes; r++)
-		{
-			cout << ".";
-
-			// Generate start and end coords
-			Vector2i start = pickEmptyCoord(map);
-			Vector2i end = pickEmptyCoord(map, start);
-
-			// Generate path using first algorithm
-			the_clock::time_point startTime1 = the_clock::now();
-			for (int i = 0; i < iterations; i++)
-			{
-				getPathfinder(algorithm1)->generatePath(map, start, end);
-			}
-			the_clock::time_point endTime1 = the_clock::now();
-			float time_taken1 = duration_cast<milliseconds>(endTime1 - startTime1).count();
-			time_taken1 /= iterations;
-			times1.push_back(time_taken1);
-
-			// Generate path using second algorithm
-			the_clock::time_point startTime2 = the_clock::now();
-			for (int i = 0; i < iterations; i++)
-			{
-				getPathfinder(algorithm2)->generatePath(map, start, end);
-			}
-			the_clock::time_point endTime2 = the_clock::now();
-			float time_taken2 = duration_cast<milliseconds>(endTime2 - startTime2).count();
-			time_taken2 /= iterations;
-			times2.push_back(time_taken2);
-
-			if (time_taken1 < time_taken2) wins1++;
-			else if (time_taken2 < time_taken1) wins2++;
-		}
-		cout << endl;
-	}
-	cout << endl;
-
-	sort(times1.begin(), times1.end());
-	sort(times2.begin(), times2.end());
-
-	int numberOfTests = maps * routes;
-
-	cout << "Median time for " << getAlgorithmName(algorithm1) << " algorithm: " << times1[times1.size() / 2] << "ms" << endl;
-	cout << "It was faster in " << wins1 << " out of " << numberOfTests << " tests." << endl;
-	cout << "Median time for " << getAlgorithmName(algorithm2) << " algorithm: " << times2[times2.size() / 2] << "ms" << endl;
-	cout << "It was faster in " << wins2 << " out of " << numberOfTests << " tests." << endl;
-
-	// Create file
-	string filePath = "Test Results/" + getAlgorithmName(algorithm1) + " vs " + getAlgorithmName(algorithm2) + ".csv";
-	ofstream my_file(filePath);
-	cout << "Writing results to " << filePath << endl;
-
-	// Write details of test to file
-	my_file << "Maps, " << maps << endl;
-	my_file << "Routes per map, " << routes << endl;
-	my_file << "iterations per route, " << iterations << endl;
-
-	// Write times to file
-	my_file << endl;
-	my_file << "Times to find Shortest Path" << endl;
-	my_file << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
-	for (int i = 0; i < numberOfTests; i++)
-	{
-		my_file << times1[i] << ", " << times2[i] << endl;
-	}
-}
-
-
-void AlgorithmTester::testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
-{
-	// Create an array of vectors of times. Each vector represents one map size.
-	vector<float>* times = new vector<float>[numberOfMapSizes] {};
 
 	for (int m = 0; m < mapsPerSize; m++)
 	{
-		for (int s = 0; s < numberOfMapSizes; s++)
+		for (int s = 0; s < mapSizes; s++)
 		{
 			int mapSize = firstMapSize + s * mapSizeInterval;
-			cout << "Map " << m * numberOfMapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
+			cout << "Map " << m * mapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routesPerMap << " routes";
 
 			// Generate map
 			Map map(Vector2i(mapSize, mapSize));
 			map.generateObstacles();
 
-			for (int r = 0; r < routes; r++)
+			for (int r = 0; r < routesPerMap; r++)
 			{
 				cout << ".";
 
@@ -218,148 +84,144 @@ void AlgorithmTester::testAlgorithmPerformanceVsMapSize(Algorithm algorithm, int
 				Vector2i start = pickEmptyCoord(map);
 				Vector2i end = pickEmptyCoord(map, start);
 
-				// Generate path
-				the_clock::time_point startTime = the_clock::now();
-				for (int i = 0; i < iterations; i++)
-				{
-					getPathfinder(algorithm)->generatePath(map, start, end);
-				}
-				the_clock::time_point endTime = the_clock::now();
+				int fastestAlgorithm;
+				float shortestTime;
+				bool isDraw;
 
-				// Get the average time taken for this specific path. This reduces ms rounding error.
-				float time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-				time_taken /= iterations;
-				times[s].push_back(time_taken);
+				for (int a = 0; a < numberOfAlgorithms; a++)
+				{
+					the_clock::time_point startTime = the_clock::now();
+					for (int t = 0; t < testsPerRoute; t++)
+					{
+						getPathfinder(algorithms[a])->generatePath(map, start, end);
+					}
+					the_clock::time_point endTime = the_clock::now();
+					float time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+					time_taken /= testsPerRoute;
+					times[a][s].push_back(time_taken);
+
+					// If it's the fastest so far
+					if (a == 0 || time_taken < shortestTime)
+					{
+						fastestAlgorithm = a;
+						shortestTime = time_taken;
+						isDraw = false;
+					}
+					// If it's as fast as the current fastest
+					else if (time_taken == shortestTime)
+					{
+						isDraw = true;
+					}
+				}
+
+				// If one algorithm was fastest
+				if (!isDraw)
+				{
+					wins[fastestAlgorithm][s]++;
+				}
 			}
 			cout << endl;
 		}
 	}
 	cout << endl;
 
+
 	// Create file
-	string filePath = "Test Results/" + getAlgorithmName(algorithm) + ".csv";
+	string filePath = "Test Results/";
+	for (int a = 0; a < numberOfAlgorithms; a++)
+	{
+		if (a > 0) filePath += " vs ";
+		filePath += getAlgorithmName(algorithms[a]);
+	}
+	filePath += ".csv";
 	ofstream my_file(filePath);
 	cout << "Writing results to " << filePath << endl;
 
 	// Write details of test to file
+	my_file << "Map sizes, " << mapSizes << endl;
 	my_file << "Maps per size, " << mapsPerSize << endl;
-	my_file << "Routes per map, " << routes << endl;
-	my_file << "iterations per route, " << iterations << endl;
+	my_file << "Routes per map, " << routesPerMap << endl;
+	int routesPerMapSize = mapsPerSize * routesPerMap;
+	my_file << "Routes per map size, " << routesPerMapSize << endl;
+	my_file << "Tests per route, " << testsPerRoute << endl;
 
 	// Write median times to file
 	my_file << endl;
 	my_file << "Median Time to find Shortest Path vs. Map Size" << endl;
-	my_file << "Map Size, " << getAlgorithmName(algorithm) << endl;
-	for (int s = 0; s < numberOfMapSizes; s++)
+	my_file << "Map Size";
+	for (int a = 0; a < numberOfAlgorithms; a++){ my_file << ", " << getAlgorithmName(algorithms[a]); }
+	my_file << endl;
+	for (int s = 0, mapSize = firstMapSize; s < mapSizes; s++, mapSize += mapSizeInterval)
 	{
-		int mapSize = firstMapSize + s * mapSizeInterval;
-		sort(times[s].begin(), times[s].end());
-		float median = times[s][times[s].size() / 2];
-		my_file << mapSize << ", " << median << endl;
+		my_file << mapSize;
+		for (int a = 0; a < numberOfAlgorithms; a++)
+		{
+			sort(times[a][s].begin(), times[a][s].end());
+			float medianTime = times[a][s][routesPerMapSize / 2];
+			my_file << ", " << medianTime;
+		}
+		my_file << endl;
 	}
 
+	// If there was only one algorithm, it will have always been the fastest so it's not worth writing its win count
+	if (numberOfAlgorithms > 1)
+	{
+		// Write win percentages to file
+		my_file << endl;
+		my_file << "Percentage of Wins vs. Map Size" << endl;
+		my_file << "Map Size";
+		for (int a = 0; a < numberOfAlgorithms; a++) { my_file << ", " << getAlgorithmName(algorithms[a]); }
+		my_file << endl;
+		for (int s = 0, mapSize = firstMapSize; s < mapSizes; s++, mapSize += mapSizeInterval)
+		{
+			my_file << mapSize;
+			for (int a = 0; a < numberOfAlgorithms; a++)
+			{
+				float winPercent = (float)wins[a][s] / routesPerMapSize * 100;
+				my_file << ", " << winPercent;
+			}
+			my_file << endl;
+		}
+	}
+
+	// Write all times to file
+	my_file << endl;
+	my_file << "Time to find Shortest Path vs. Map Size" << endl;
+	my_file << "Map Size" << endl;
+	for (int s = 0, mapSize = firstMapSize; s < mapSizes; s++, mapSize += mapSizeInterval)
+	{
+		if (s > 0) my_file << ", ";
+		my_file << mapSize;
+	}
+	my_file << endl;
+	for (int a = 0; a < numberOfAlgorithms; a++)
+	{
+		my_file << getAlgorithmName(algorithms[a]) << endl;
+		for (int i = 0; i < routesPerMapSize; i++)
+		{
+			for (int s = 0; s < mapSizes; s++)
+			{
+				if (s > 0) my_file << ", ";
+				my_file << times[a][s][i];
+			}
+			my_file << endl;
+		}
+	}
+
+
+	// Delete times
+	for (int i = 0; i < numberOfAlgorithms; i++)
+	{
+		delete[] times[i];
+	}
 	delete[] times;
-}
 
-
-void AlgorithmTester::testAlgorithmsHeadToHeadPerformanceVsMapSize(Algorithm algorithm1, Algorithm algorithm2, int numberOfMapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routes, int iterations)
-{
-	// Create an array of vectors of times. Each vector represents the times for one map size.
-	vector<float>* times1 = new vector<float>[numberOfMapSizes] {};
-	vector<float>* times2 = new vector<float>[numberOfMapSizes] {};
-
-	// Create an array of wins. Each int represent the number of wins for one map size.
-	int* wins1 = new int[numberOfMapSizes] {};
-	int* wins2 = new int[numberOfMapSizes] {};
-
-	for (int m = 0; m < mapsPerSize; m++)
+	// Delete wins
+	for (int i = 0; i < numberOfAlgorithms; i++)
 	{
-		for (int s = 0; s < numberOfMapSizes; s++)
-		{
-			int mapSize = firstMapSize + s * mapSizeInterval;
-			cout << "Map " << m * numberOfMapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routes << " routes";
-
-			// Generate map
-			Map map(Vector2i(mapSize, mapSize));
-			map.generateObstacles();
-
-			for (int r = 0; r < routes; r++)
-			{
-				cout << ".";
-
-				// Generate start and end coords
-				Vector2i start = pickEmptyCoord(map);
-				Vector2i end = pickEmptyCoord(map, start);
-
-				// Generate path using first algorithm
-				the_clock::time_point startTime1 = the_clock::now();
-				for (int i = 0; i < iterations; i++)
-				{
-					getPathfinder(algorithm1)->generatePath(map, start, end);
-				}
-				the_clock::time_point endTime1 = the_clock::now();
-				float time_taken1 = duration_cast<milliseconds>(endTime1 - startTime1).count();
-				time_taken1 /= iterations;
-				times1[s].push_back(time_taken1);
-
-				// Generate path using second algorithm
-				the_clock::time_point startTime2 = the_clock::now();
-				for (int i = 0; i < iterations; i++)
-				{
-					getPathfinder(algorithm2)->generatePath(map, start, end);
-				}
-				the_clock::time_point endTime2 = the_clock::now();
-				float time_taken2 = duration_cast<milliseconds>(endTime2 - startTime2).count();
-				time_taken2 /= iterations;
-				times2[s].push_back(time_taken2);
-
-				if (time_taken1 < time_taken2) wins1[s]++;
-				else if (time_taken2 < time_taken1) wins2[s]++;
-			}
-			cout << endl;
-		}
+		delete[] wins[i];
 	}
-	cout << endl;
-
-	// Create file
-	string filePath = "Test Results/" + getAlgorithmName(algorithm1) + " vs " + getAlgorithmName(algorithm2) + ".csv";
-	ofstream my_file(filePath);
-	cout << "Writing results to " << filePath << endl;
-
-	// Write details of test to file
-	my_file << "Maps per size, " << mapsPerSize << endl;
-	my_file << "Routes per map, " << routes << endl;
-	my_file << "iterations per route, " << iterations << endl;
-
-	// Write median times to file
-	my_file << endl;
-	my_file << "Median Time to find Shortest Path vs. Map Size" << endl;
-	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
-	for (int s = 0, mapSize = firstMapSize; s < numberOfMapSizes; s++, mapSize += mapSizeInterval)
-	{
-		sort(times1[s].begin(), times1[s].end());
-		float median1 = times1[s][times1[s].size() / 2];
-		sort(times2[s].begin(), times2[s].end());
-		float median2 = times2[s][times2[s].size() / 2];
-		my_file << mapSize << ", " << median1 << ", " << median2 << endl;
-	}
-
-	// Write win percentages to file
-	my_file << endl;
-	my_file << "Percentage of Wins vs. Map Size" << endl;
-	my_file << "Map Size, " << getAlgorithmName(algorithm1) << ", " << getAlgorithmName(algorithm2) << endl;
-	for (int s = 0, mapSize = firstMapSize; s < numberOfMapSizes; s++, mapSize+= mapSizeInterval)
-	{
-		int testsPerSize = mapsPerSize * routes;
-		float win1 = (float)wins1[s] / testsPerSize * 100;
-		float win2 = (float)wins2[s] / testsPerSize * 100;
-		my_file << mapSize << ", " << win1 << ", " << win2 << endl;
-	}
-
-	delete[] times1;
-	delete[] times2;
-	delete[] wins1;
-	delete[] wins2;
+	delete[] wins;
 }
 
 

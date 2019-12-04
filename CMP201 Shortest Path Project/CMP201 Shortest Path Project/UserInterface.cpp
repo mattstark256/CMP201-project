@@ -8,8 +8,6 @@ using namespace std;
 #include "Vector2i.h"
 
 
-
-
 UserInterface::UserInterface(AlgorithmTester* _algorithmTester) : algorithmTester(_algorithmTester)
 {
 }
@@ -34,22 +32,17 @@ void UserInterface::mainMenu()
 	{
 		cout << "MAIN MENU\n";
 		cout << "1: Visualize algorithm\n";
-		cout << "2: Test algorithm performance\n";
-		cout << "3: Test algorithm performance head to head\n";
-		cout << "4: Test algorithm performance against map size\n";
-		cout << "5: Test algorithm performance against map size head to head\n";
-		cout << "6: Quit\n";
+		cout << "2: Benchmark algorithms\n";
+		cout << "3: Quit\n";
 
-		int input = getIntInput();
+		int input = getIntInput(1, 3);
 
 		if (input == 1) visualizeAlgorithm();
-		else if (input == 2) testAlgorithmPerformance();
-		else if (input == 3) testAlgorithmPerformanceHeadToHead();
-		else if (input == 4) testAlgorithmPerformanceVsMapSize();
-		else if (input == 5) testAlgorithmPerformanceVsMapSizeHeadToHead();
-		else if (input == 6) return;
+		else if (input == 2) benchmarkAlgorithms();
+		else if (input == 3) return;
 	}
 }
+
 
 void UserInterface::visualizeAlgorithm()
 {
@@ -57,205 +50,110 @@ void UserInterface::visualizeAlgorithm()
 	Algorithm algorithm = selectAlgorithm();
 
 	cout << "Please enter map size.\n";
-	int mapSize = getIntInput();
+	int mapSize = getIntInput(10, 1000);
 
 	while (true)
 	{
 		algorithmTester->visualizeAlgorithm(algorithm, mapSize);
 		cout << "\n";
 
-		while (true)
-		{
-			cout << "Run algorithm again?\n";
-			cout << "1: Yes\n";
-			cout << "2: No\n";
+		cout << "Run algorithm again?\n";
+		cout << "1: Yes\n";
+		cout << "2: No\n";
 
-			int input = getIntInput();
+		int input = getIntInput(1, 2);
 
-			if (input == 1) break;
-			else if (input == 2) return;
-		}
+		if (input == 2) return;
 	}
 }
 
 
-void UserInterface::testAlgorithmPerformance()
+void UserInterface::benchmarkAlgorithms()
 {
-	cout << "Please choose an algorithm.\n";
-	Algorithm algorithm = selectAlgorithm();
+	cout << "How many algorithms would you like to benchmark?\n";
+	int numberOfAlgorithms = getIntInput(1, 4);
 
-	cout << "Please enter map size.\n";
-	int mapSize = getIntInput();
-
-	cout << "Please enter number of random maps.\n";
-	int maps = getIntInput();
-
-	cout << "Please enter number of random routes per map.\n";
-	int routes = getIntInput();
-
-	cout << "Please enter number of iterations per route. Higher values reduce ms rounding error.\n";
-	int iterations = getIntInput();
-
-	while (true)
+	vector<Algorithm> algorithms;
+	if (numberOfAlgorithms == 1)
 	{
-		algorithmTester->testAlgorithm(algorithm, mapSize, maps, routes, iterations);
-		cout << "\n";
-
-		while (true)
-		{
-			cout << "Run test again?\n";
-			cout << "1: Yes\n";
-			cout << "2: No\n";
-
-			int input = getIntInput();
-
-			if (input == 1) break;
-			else if (input == 2) return;
-		}
+		cout << "Please choose an algorithm.\n";
+		algorithms.push_back(selectAlgorithm());
 	}
-}
-
-
-void UserInterface::testAlgorithmPerformanceHeadToHead()
-{
-	cout << "Please choose the first algorithm.\n";
-	Algorithm algorithm1 = selectAlgorithm();
-
-	cout << "Please choose the second algorithm.\n";
-	Algorithm algorithm2 = selectAlgorithm();
-
-	cout << "Please enter map size.\n";
-	int mapSize = getIntInput();
-
-	cout << "Please enter number of random maps.\n";
-	int maps = getIntInput();
-
-	cout << "Please enter number of random routes per map.\n";
-	int routes = getIntInput();
-
-	cout << "Please enter number of iterations per route. Higher values reduce ms rounding error.\n";
-	int iterations = getIntInput();
-
-	while (true)
+	else
 	{
-		algorithmTester->testAlgorithmsHeadToHead(algorithm1, algorithm2, mapSize, maps, routes, iterations);
-		cout << "\n";
-
-		while (true)
+		for (int a = 0; a < numberOfAlgorithms; a++)
 		{
-			cout << "Run test again?\n";
-			cout << "1: Yes\n";
-			cout << "2: No\n";
-
-			int input = getIntInput();
-
-			if (input == 1) break;
-			else if (input == 2) return;
+			cout << "Please choose algorithm " << a + 1 << ".\n";
+			algorithms.push_back(selectAlgorithm());
 		}
 	}
-}
-
-
-void UserInterface::testAlgorithmPerformanceVsMapSize()
-{
-	cout << "Please choose an algorithm.\n";
-	Algorithm algorithm = selectAlgorithm();
 
 	cout << "Please enter the number of map sizes.\n";
-	int numberOfMapSizes = getIntInput();
+	int numberOfMapSizes = getIntInput(1, 100);
 
-	cout << "Please enter the first map size.\n";
-	int firstMapSize = getIntInput();
-
-	cout << "Please enter the map size interval.\n";
-	int mapSizeInterval = getIntInput();
-
-	cout << "Please enter number of random maps per size.\n";
-	int maps = getIntInput();
-
-	cout << "Please enter number of random routes per map.\n";
-	int routes = getIntInput();
-
-	cout << "Please enter number of iterations per route. Higher values reduce ms rounding error.\n";
-	int iterations = getIntInput();
-
-	while (true)
+	int firstMapSize;
+	int mapSizeInterval = 0;
+	if (numberOfMapSizes == 1)
 	{
-		algorithmTester->testAlgorithmPerformanceVsMapSize(algorithm, numberOfMapSizes, firstMapSize, mapSizeInterval, maps, routes, iterations);
-		cout << "\n";
-
-		while (true)
-		{
-			cout << "Run test again?\n";
-			cout << "1: Yes\n";
-			cout << "2: No\n";
-
-			int input = getIntInput();
-
-			if (input == 1) break;
-			else if (input == 2) return;
-		}
+		cout << "Please enter the map size.\n";
+		firstMapSize = getIntInput(10, 10000);
 	}
-}
+	else
+	{
+		cout << "Please enter the first map size.\n";
+		firstMapSize = getIntInput(10, 10000);
 
-void UserInterface::testAlgorithmPerformanceVsMapSizeHeadToHead()
-{
-	cout << "Please choose the first algorithm.\n";
-	Algorithm algorithm1 = selectAlgorithm();
-
-	cout << "Please choose the second algorithm.\n";
-	Algorithm algorithm2 = selectAlgorithm();
-
-	cout << "Please enter the number of map sizes.\n";
-	int numberOfMapSizes = getIntInput();
-
-	cout << "Please enter the first map size.\n";
-	int firstMapSize = getIntInput();
-
-	cout << "Please enter the map size interval.\n";
-	int mapSizeInterval = getIntInput();
+		cout << "Please enter the map size interval.\n";
+		mapSizeInterval = getIntInput(1, 1000);
+	}
 
 	cout << "Please enter number of random maps per size.\n";
-	int maps = getIntInput();
+	int maps = getIntInput(1, 1000);
 
 	cout << "Please enter number of random routes per map.\n";
-	int routes = getIntInput();
+	int routes = getIntInput(1, 1000);
 
-	cout << "Please enter number of iterations per route. Higher values reduce ms rounding error.\n";
-	int iterations = getIntInput();
+	cout << "Please enter number of tests per route. Higher values reduce ms rounding error.\n";
+	int iterations = getIntInput(1, 1000);
 
 	while (true)
 	{
-		algorithmTester->testAlgorithmsHeadToHeadPerformanceVsMapSize(algorithm1, algorithm2, numberOfMapSizes, firstMapSize, mapSizeInterval, maps, routes, iterations);
+		algorithmTester->benchmarkAlgorithms(algorithms, numberOfMapSizes, firstMapSize, mapSizeInterval, maps, routes, iterations);
 		cout << "\n";
 
-		while (true)
-		{
-			cout << "Run test again?\n";
-			cout << "1: Yes\n";
-			cout << "2: No\n";
+		cout << "Run test again?\n";
+		cout << "1: Yes\n";
+		cout << "2: No\n";
 
-			int input = getIntInput();
+		int input = getIntInput(1, 2);
 
-			if (input == 1) break;
-			else if (input == 2) return;
-		}
+		if (input == 2) return;
 	}
 }
 
 
-// Gets the users input as an int. Non-int values return 0.
-int UserInterface::getIntInput()
+// Gets the users input as an int. Rejects inputs outside the specified range. Non-int values are converted to 0.
+int UserInterface::getIntInput(int min, int max)
 {
-	int input;
-	cin >> input;
-	cout << "\n";
+	while (true)
+	{
+		int input;
+		cin >> input;
 
-	// Handle non-int inputs
-	cin.clear(); // Clear the error flags
-	cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard any input waiting in the stream
+		// Handle non-int inputs
+		cin.clear(); // Clear the error flags
+		cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard any input waiting in the stream
 
-	return input;
+		if (input < min || input > max)
+		{
+			cout << "Input not valid. Please enter a number in the range " << min << " to " << max << ".\n";
+		}
+		else
+		{
+			cout << "\n";
+			return input;
+		}
+	}
 }
 
 
@@ -268,32 +166,11 @@ Algorithm UserInterface::selectAlgorithm()
 		cout << "3: A*\n";
 		cout << "4: A* alternate\n";
 
-		int input = getIntInput();
+		int input = getIntInput(1, 4);
 
 		if (input == 1) return Algorithm::Lee;
 		else if (input == 2) return Algorithm::Dijkstra;
 		else if (input == 3) return Algorithm::AStar;
 		else if (input == 4) return Algorithm::AStarAlternate;
-	}
-}
-
-void UserInterface::printAlgorithmName(Algorithm algorithm)
-{
-	switch (algorithm)
-	{
-	case Lee:
-		cout << "Lee";
-		break;
-	case Dijkstra:
-		cout << "Dijkstra";
-		break;
-	case AStar:
-		cout << "A*";
-		break;
-	case AStarAlternate:
-		cout << "A* alternate";
-		break;
-	default:
-		break;
 	}
 }
