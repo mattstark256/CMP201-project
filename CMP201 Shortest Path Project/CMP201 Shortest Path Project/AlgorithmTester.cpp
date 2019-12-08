@@ -9,7 +9,7 @@ using namespace std;
 // Clock stuff
 #include <chrono>
 using std::chrono::duration_cast;
-using std::chrono::milliseconds;
+using std::chrono::nanoseconds;
 using the_clock = std::chrono::steady_clock;
 
 
@@ -37,14 +37,10 @@ void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 
 	// Generate path
 	Path path = getPathfinder(algorithm)->generatePath(map, start, end, &mapDisplayer);
-
-	ofstream my_file("Test Results/hello.csv");
-	my_file << "Hello, world!\n";
-	my_file << "Goodbye, world!\n";
 }
 
 
-void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routesPerMap, int testsPerRoute)
+void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int journeysPerMap)
 {
 	int numberOfAlgorithms = algorithms.size();
 
@@ -70,13 +66,13 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 		for (int s = 0; s < mapSizes; s++)
 		{
 			int mapSize = firstMapSize + s * mapSizeInterval;
-			cout << "Map " << m * mapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << routesPerMap << " routes";
+			cout << "Map " << m * mapSizes + s + 1 << ", Size " << mapSize << "x" << mapSize << ", Testing " << journeysPerMap << " journeys";
 
 			// Generate map
 			Map map(Vector2i(mapSize, mapSize));
 			map.generateObstacles();
 
-			for (int r = 0; r < routesPerMap; r++)
+			for (int j = 0; j < journeysPerMap; j++)
 			{
 				cout << ".";
 
@@ -91,13 +87,9 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 				for (int a = 0; a < numberOfAlgorithms; a++)
 				{
 					the_clock::time_point startTime = the_clock::now();
-					for (int t = 0; t < testsPerRoute; t++)
-					{
-						getPathfinder(algorithms[a])->generatePath(map, start, end);
-					}
+					getPathfinder(algorithms[a])->generatePath(map, start, end);
 					the_clock::time_point endTime = the_clock::now();
-					float time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-					time_taken /= testsPerRoute;
+					float time_taken = (float)duration_cast<nanoseconds>(endTime - startTime).count() / 1000000;
 					times[a][s].push_back(time_taken);
 
 					// If it's the fastest so far
@@ -125,7 +117,6 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 	}
 	cout << endl;
 
-
 	// Create file
 	string filePath = "Test Results/";
 	for (int a = 0; a < numberOfAlgorithms; a++)
@@ -135,15 +126,14 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 	}
 	filePath += ".csv";
 	ofstream my_file(filePath);
-	cout << "Writing results to " << filePath << endl;
+	cout << "Writing results to " << filePath << " (If no Test Results directory exists the results will not be saved)" << endl;
 
 	// Write details of test to file
 	my_file << "Map sizes, " << mapSizes << endl;
 	my_file << "Maps per size, " << mapsPerSize << endl;
-	my_file << "Routes per map, " << routesPerMap << endl;
-	int routesPerMapSize = mapsPerSize * routesPerMap;
-	my_file << "Routes per map size, " << routesPerMapSize << endl;
-	my_file << "Tests per route, " << testsPerRoute << endl;
+	my_file << "Journeys per map, " << journeysPerMap << endl;
+	int journeysPerMapSize = mapsPerSize * journeysPerMap;
+	my_file << "Journeys per map size, " << journeysPerMapSize << endl;
 
 	// Write median times to file
 	my_file << endl;
@@ -157,7 +147,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 		for (int a = 0; a < numberOfAlgorithms; a++)
 		{
 			sort(times[a][s].begin(), times[a][s].end());
-			float medianTime = times[a][s][routesPerMapSize / 2];
+			float medianTime = times[a][s][journeysPerMapSize / 2];
 			my_file << ", " << medianTime;
 		}
 		my_file << endl;
@@ -177,7 +167,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 			my_file << mapSize;
 			for (int a = 0; a < numberOfAlgorithms; a++)
 			{
-				float winPercent = (float)wins[a][s] / routesPerMapSize * 100;
+				float winPercent = (float)wins[a][s] / journeysPerMapSize * 100;
 				my_file << ", " << winPercent;
 			}
 			my_file << endl;
@@ -197,7 +187,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 	for (int a = 0; a < numberOfAlgorithms; a++)
 	{
 		my_file << getAlgorithmName(algorithms[a]) << endl;
-		for (int i = 0; i < routesPerMapSize; i++)
+		for (int i = 0; i < journeysPerMapSize; i++)
 		{
 			for (int s = 0; s < mapSizes; s++)
 			{

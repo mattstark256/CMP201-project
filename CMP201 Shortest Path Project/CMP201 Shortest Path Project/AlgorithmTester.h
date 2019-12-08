@@ -16,7 +16,7 @@ public:
 	~AlgorithmTester();
 
 	void visualizeAlgorithm(Algorithm algorithm, int mapSize);
-	void benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int routesPerMap, int testsPerRoute);
+	void benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int journeysPerMap);
 
 private:
 	MapDisplayer mapDisplayer;

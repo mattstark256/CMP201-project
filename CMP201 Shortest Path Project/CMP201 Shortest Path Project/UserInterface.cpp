@@ -110,15 +110,12 @@ void UserInterface::benchmarkAlgorithms()
 	cout << "Please enter number of random maps per size.\n";
 	int maps = getIntInput(1, 1000);
 
-	cout << "Please enter number of random routes per map.\n";
-	int routes = getIntInput(1, 1000);
-
-	cout << "Please enter number of tests per route. Higher values reduce ms rounding error.\n";
-	int iterations = getIntInput(1, 1000);
+	cout << "Please enter number of random journeys per map.\n";
+	int journeys = getIntInput(1, 1000);
 
 	while (true)
 	{
-		algorithmTester->benchmarkAlgorithms(algorithms, numberOfMapSizes, firstMapSize, mapSizeInterval, maps, routes, iterations);
+		algorithmTester->benchmarkAlgorithms(algorithms, numberOfMapSizes, firstMapSize, mapSizeInterval, maps, journeys);
 		cout << "\n";
 
 		cout << "Run test again?\n";
