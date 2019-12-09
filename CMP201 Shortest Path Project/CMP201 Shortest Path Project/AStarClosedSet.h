@@ -4,6 +4,9 @@
 #include <vector>
 
 
+// The closed set used by AStarPathfinder
+
+
 class AStarClosedSet
 {
 public:

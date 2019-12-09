@@ -9,6 +9,9 @@
 enum Algorithm { Lee, Dijkstra, AStar, AStarAlternate };
 
 
+// AlgorithmTester contains the visualization and benchmarking functions. UserInterface can call these functions.
+
+
 class AlgorithmTester
 {
 public:
@@ -20,6 +23,7 @@ public:
 
 private:
 	MapDisplayer mapDisplayer;
+
 	LeePathfinder leePathfinder;
 	DijkstraPathfinder dijkstraPathfinder;
 	AStarPathfinder aStarPathfinder;

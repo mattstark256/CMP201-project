@@ -25,6 +25,7 @@ void DijkstraClosedSet::addNode(DijkstraNode* node)
 }
 
 
+// Return true if the set contains a node with the specified coordinate
 bool DijkstraClosedSet::contains(Vector2i coord)
 {
 	// Calculate a hash unique to the coordinate

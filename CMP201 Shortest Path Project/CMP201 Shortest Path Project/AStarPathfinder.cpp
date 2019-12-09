@@ -15,11 +15,13 @@ AStarPathfinder::~AStarPathfinder()
 }
 
 
+// Search for a path between the start and end points using the A* algorithm. If mapDisplayer is not nullptr, display the results.
 Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end, MapDisplayer* mapDisplayer)
 {
 	// This is used for calculating position hashes
 	closedSet.setMapWidth(map.getSize().x);
 
+	// Set up the start node
 	AStarNode* startNode = new AStarNode();
 	startNode->coord = start;
 	startNode->f = findHeuristic(start, end);
@@ -31,19 +33,22 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end,
 	bool pathFound = false;
 	while (!openSet.isEmpty())
 	{
+		// Get the node with the smallest f value
 		AStarNode* current = openSet.getBackNode();
 
+		// If a path to the end has been found
 		if (current->coord == end)
 		{
-			// Path has been found
 			pathFound = true;
 			endNode = current;
 			break;
 		}
 
+		// Move the current node from the open set to the closed set
 		openSet.popBack();
 		closedSet.addNode(current);
 
+		// For each movement direction
 		for (int i = 0; i < MOVEMENT_DIRECTIONS; i++)
 		{
 			Vector2i neighbourCoord(current->coord.x + xOffsets[i], current->coord.y + yOffsets[i]);
@@ -74,23 +79,27 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end,
 			// If the neighbour is on the closed list, skip it
 			if (closedSet.contains(neighbourCoord)) { continue; }
 
+			// Calculate the neighbour's g value
 			float new_g = current->g + distances[i];
 
 			// If it's in the open list
 			std::vector<AStarNode*>::iterator it = openSet.findNode(neighbourCoord);
 			if (!openSet.isEnd(it))
 			{
-				if ((*it)->g < new_g)
+				if ((*it)->g <= new_g)
 				{
+					// If the node in the open list has a better or equal g value, we don't need to replace it.
 					continue;
 				}
 				else
 				{
+					// If the node in the open list has a worse g value, we need to replace it.
 					// We'll be calculating a new value for f so it'll need to be re-inserted to maintain the correct list order
 					openSet.deleteNode(it);
 				}
 			}
 
+			// Create a new node and insert it into the open set
 			AStarNode* neighbourNode = new AStarNode();
 			neighbourNode->coord = neighbourCoord;
 			neighbourNode->g = new_g;
@@ -101,6 +110,7 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end,
 		}
 	}
 
+	// Create a path. Start from the end node and follow each node's parent back to the start
 	Path path(start, end);
 	if (pathFound)
 	{
@@ -114,20 +124,25 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end,
 		}
 	}
 
+	// If a mapDisplayer was provided, display the results
 	if (mapDisplayer != nullptr)
 	{
 		mapDisplayer->loadMap(map);
+
+		// Draw the open set
 		for (auto node : *openSet.getSet())
 		{
 			mapDisplayer->setChar(node->coord, 'o');
 			mapDisplayer->setColour(node->coord, 0x0004);
 		}
+		// Draw the closed set
 		for (auto node : *closedSet.getSet())
 		{
 			mapDisplayer->setChar(node->coord, '.');
 			mapDisplayer->setColour(node->coord, 0x0004);
 		}
-		mapDisplayer->loadPath(path);
+
+		mapDisplayer->drawPath(path);
 		mapDisplayer->print();
 	}
 
@@ -138,7 +153,7 @@ Path AStarPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end,
 }
 
 
-// Find octile distance
+// Find octile distance between two coordinates (i.e. the distance moving only orthogonally and diagonally)
 float AStarPathfinder::findHeuristic(Vector2i a, Vector2i b)
 {
 	float dx = abs(a.x - b.x);

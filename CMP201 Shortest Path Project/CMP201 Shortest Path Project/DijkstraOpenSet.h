@@ -4,6 +4,9 @@
 #include <vector>
 
 
+// The open set used by DijkstraPathfinder
+
+
 class DijkstraOpenSet
 {
 public:
@@ -19,7 +22,7 @@ public:
 	void popBack();
 	void insertOrdered(DijkstraNode* node);
 
-	// Search for an element and return the index. Returns  if list.end() it's not found. The reason I'm doing it this way is so I only need to search the list once when I check a node then delete it from the list afterwards.
+	// Search for an element and return the index. Returns set.end() if it's not found. The reason I'm doing it this way is so I only need to search the set once when I check a node then delete it from the set afterwards.
 	std::vector<DijkstraNode*>::iterator findNode(Vector2i coord);
 	// This is used to check whether findNode found anything. 
 	bool isEnd(std::vector<DijkstraNode*>::iterator it);

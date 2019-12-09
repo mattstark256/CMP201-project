@@ -2,6 +2,10 @@
 
 #include "AlgorithmTester.h"
 
+
+// UserInterface contains menus allowing the user to interact with the application. It handles input then calls funtions in algorithmTester.
+
+
 class UserInterface
 {
 public:

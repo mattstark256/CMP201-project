@@ -5,6 +5,9 @@
 #include "MapDisplayer.h"
 
 
+// This is the base class from which the pathfinding algorithms inherit
+
+
 class Pathfinder
 {
 public:

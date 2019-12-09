@@ -3,6 +3,9 @@
 #include "Vector2i.h"
 
 
+// AStarNode is used by AStarPathfinder to store information about tiles it has checked.
+
+
 struct AStarNode
 {
 	AStarNode();

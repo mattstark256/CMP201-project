@@ -8,6 +8,10 @@
 #define MOVEMENT_DIRECTIONS 8
 
 
+// Pathfinder using the A* algorithm
+// This is a copy of AStarPathfinder. I can change specific parts and benchmark them against each other to see if the change improves performance.
+
+
 class AlternateAStarPathfinder :
 	public Pathfinder
 {

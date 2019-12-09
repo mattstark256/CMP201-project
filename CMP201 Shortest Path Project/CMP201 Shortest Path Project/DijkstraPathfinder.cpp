@@ -15,11 +15,13 @@ DijkstraPathfinder::~DijkstraPathfinder()
 }
 
 
+// Search for a path between the start and end points using the Dijkstra algorithm. If mapDisplayer is not nullptr, display the results.
 Path DijkstraPathfinder::generatePath(const Map& map, Vector2i start, Vector2i end, MapDisplayer* mapDisplayer)
 {
 	// This is used for calculating position hashes
 	closedSet.setMapWidth(map.getSize().x);
 
+	// Set up the start node
 	DijkstraNode* startNode = new DijkstraNode();
 	startNode->coord = start;
 	startNode->parent = nullptr;
@@ -30,19 +32,22 @@ Path DijkstraPathfinder::generatePath(const Map& map, Vector2i start, Vector2i e
 	bool pathFound = false;
 	while (!openSet.isEmpty())
 	{
+		// Get the node with the smallest cost value
 		DijkstraNode* current = openSet.getBackNode();
 
+		// If a path to the end has been found
 		if (current->coord == end)
 		{
-			// Path has been found
 			pathFound = true;
 			endNode = current;
 			break;
 		}
 
+		// Move the current node from the open set to the closed set
 		openSet.popBack();
 		closedSet.addNode(current);
 
+		// For each movement direction
 		for (int i = 0; i < MOVEMENT_DIRECTIONS; i++)
 		{
 			Vector2i neighbourCoord(current->coord.x + xOffsets[i], current->coord.y + yOffsets[i]);
@@ -73,23 +78,27 @@ Path DijkstraPathfinder::generatePath(const Map& map, Vector2i start, Vector2i e
 			// If the neighbour is on the closed list, skip it
 			if (closedSet.contains(neighbourCoord)) { continue; }
 
+			// Calculate the neighbour's cost
 			float newCost = current->cost + distances[i];
 
 			// If it's in the open list
 			std::vector<DijkstraNode*>::iterator it = openSet.findNode(neighbourCoord);
 			if (!openSet.isEnd(it))
 			{
-				if ((*it)->cost < newCost)
+				if ((*it)->cost <= newCost)
 				{
+					// If the node in the open list has a better or equal cost, we don't need to replace it.
 					continue;
 				}
 				else
 				{
+					// If the node in the open list has a worse cost, we need to replace it.
 					// We'll be calculating a new value for cost so it'll need to be re-inserted to maintain the correct list order
 					openSet.deleteNode(it);
 				}
 			}
 
+			// Create a new node and insert it into the open set
 			DijkstraNode* neighbourNode = new DijkstraNode();
 			neighbourNode->coord = neighbourCoord;
 			neighbourNode->cost = newCost;
@@ -98,6 +107,7 @@ Path DijkstraPathfinder::generatePath(const Map& map, Vector2i start, Vector2i e
 		}
 	}
 
+	// Create a path. Start from the end node and follow each node's parent back to the start
 	Path path(start, end);
 	if (pathFound)
 	{
@@ -111,20 +121,25 @@ Path DijkstraPathfinder::generatePath(const Map& map, Vector2i start, Vector2i e
 		}
 	}
 
+	// If a mapDisplayer was provided, display the results
 	if (mapDisplayer != nullptr)
 	{
 		mapDisplayer->loadMap(map);
+
+		// Draw the open set
 		for (auto node : *openSet.getSet())
 		{
 			mapDisplayer->setChar(node->coord, 'o');
 			mapDisplayer->setColour(node->coord, 0x0004);
 		}
+		// Draw the closed set
 		for (auto node : *closedSet.getSet())
 		{
 			mapDisplayer->setChar(node->coord, '.');
 			mapDisplayer->setColour(node->coord, 0x0004);
 		}
-		mapDisplayer->loadPath(path);
+
+		mapDisplayer->drawPath(path);
 		mapDisplayer->print();
 	}
 

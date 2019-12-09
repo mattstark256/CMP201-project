@@ -3,6 +3,9 @@
 #include "Vector2i.h"
 
 
+// A Map is a grid of tiles that can be empty or contain obstacles. 0 means empty and 1 means obstacle.
+
+
 class Map
 {
 public:

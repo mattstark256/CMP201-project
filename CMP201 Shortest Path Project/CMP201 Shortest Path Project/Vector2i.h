@@ -1,6 +1,9 @@
 #pragma once
 
 
+// Vector2i is a 2D integer vector with x and y components
+
+
 struct Vector2i
 {
 	int x;

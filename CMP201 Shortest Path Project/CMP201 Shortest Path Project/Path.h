@@ -4,6 +4,9 @@
 #include <vector>
 
 
+// Path contains a start and end point and can also contain a sequence of coordinates connecting the two.
+
+
 class Path
 {
 public:
@@ -22,6 +25,6 @@ private:
 	Vector2i start;
 	Vector2i end;
 	std::vector<Vector2i> pathCoords;
-	bool connected = false;
+	bool connected = false; // Whether a route exists between the start and end points
 };
 

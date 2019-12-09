@@ -187,15 +187,11 @@
     <ClInclude Include="DijkstraPathfinder.h" />
     <ClInclude Include="LeePathfinder.h" />
     <ClInclude Include="MapDisplayer.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Vector2i.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="Pathfinder.h" />
     <ClInclude Include="UserInterface.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="CMP201 Shortest Path Project.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

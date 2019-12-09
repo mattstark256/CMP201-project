@@ -4,6 +4,9 @@
 #define MOVEMENT_DIRECTIONS 4
 
 
+// Pathfinder using the Lee algorithm
+
+
 class LeePathfinder :
 	public Pathfinder
 {

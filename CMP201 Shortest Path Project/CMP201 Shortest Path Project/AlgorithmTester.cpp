@@ -1,12 +1,12 @@
 #include "AlgorithmTester.h"
 
 #include "Map.h"
-#include <algorithm> // std::sort
+#include <algorithm> // sort
 #include <iostream>
-#include <fstream>
+#include <fstream> // ofstream, used for writing to CSV file
 using namespace std;
 
-// Clock stuff
+// Set up clock
 #include <chrono>
 using std::chrono::duration_cast;
 using std::chrono::nanoseconds;
@@ -23,6 +23,7 @@ AlgorithmTester::~AlgorithmTester()
 }
 
 
+// Find a path using the specified algorithm then display the results
 void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 {
 	cout << "Visualizing the " << getAlgorithmName(algorithm) << " algorithm with a map size of " << mapSize << ". Start and end points will be randomly selected.\n\n";
@@ -35,24 +36,31 @@ void AlgorithmTester::visualizeAlgorithm(Algorithm algorithm, int mapSize)
 	Vector2i start = pickEmptyCoord(map);
 	Vector2i end = pickEmptyCoord(map, start);
 
-	// Generate path
+	// Generate path and display it
 	Path path = getPathfinder(algorithm)->generatePath(map, start, end, &mapDisplayer);
 }
 
 
-void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int mapSizes, int firstMapSize, int mapSizeInterval, int mapsPerSize, int journeysPerMap)
+// Benchmark the specified algorithms then save the results to a CSV file.
+void AlgorithmTester::benchmarkAlgorithms(
+	std::vector<Algorithm> algorithms,		// The algorithms to be benchmarked
+	int mapSizes,							// The number of different map sizes to test
+	int firstMapSize,						// The first map size
+	int mapSizeInterval,					// The difference between consecutive map sizes
+	int mapsPerSize,						// The number of random maps to be generated for each map size
+	int journeysPerMap)						// The number of random journeys to be tested for each map
 {
 	int numberOfAlgorithms = algorithms.size();
 
-	// Create a array of arrays of vectors of floats.
-	// First array is for each algorithm, second is for each map size and the vector is for each measured time.
+	// Create a array of arrays of vectors of floats representing times to find paths.
+	// First array is for each algorithm, second is for each map size and the vector is for each journey.
 	vector<float>** times = new vector<float>*[numberOfAlgorithms] {};
 	for (int i = 0; i < numberOfAlgorithms; i++)
 	{
 		times[i] = new vector<float>[mapSizes] {};
 	}
 
-	// Create a array of arrays of ints
+	// Create a array of arrays of ints representing number of times each algorithm is faster than the others
 	// First array is for each algorithm, second is for each map size.
 	int** wins = new int*[numberOfAlgorithms] {};
 	for (int i = 0; i < numberOfAlgorithms; i++)
@@ -60,9 +68,10 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 		wins[i] = new int[mapSizes] {};
 	}
 
-
-	for (int m = 0; m < mapsPerSize; m++)
+	// Repeat mapsPerSize times. This is outside the mapSizes loop because doing all of one size's tests before starting another size increases chances that the results will be impacted by changing external conditions.
+	for (int m = 0, totalJourneys = 0; m < mapsPerSize; m++)
 	{
+		// For each map size
 		for (int s = 0; s < mapSizes; s++)
 		{
 			int mapSize = firstMapSize + s * mapSizeInterval;
@@ -72,7 +81,8 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 			Map map(Vector2i(mapSize, mapSize));
 			map.generateObstacles();
 
-			for (int j = 0; j < journeysPerMap; j++)
+			// Repeat journeysPerMap times
+			for (int j = 0; j < journeysPerMap; j++, totalJourneys++)
 			{
 				cout << ".";
 
@@ -80,22 +90,29 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 				Vector2i start = pickEmptyCoord(map);
 				Vector2i end = pickEmptyCoord(map, start);
 
-				int fastestAlgorithm;
-				float shortestTime;
-				bool isDraw;
+				int fastestAlgorithm; // The index in the algorithms vector of the algorithm that was fastest
+				float shortestTime; // How long it took
+				bool isDraw; // Whether it was a draw
 
+				// For each algorithm in the algorithms vector
 				for (int a = 0; a < numberOfAlgorithms; a++)
 				{
+					// "a2" is "a" but shifted. This means the algorithm order changes each journey. The last to be tested seems to perform slightly better
+					int a2 = (totalJourneys + a) % numberOfAlgorithms;
+
+					// Run the algorithm and time it
 					the_clock::time_point startTime = the_clock::now();
-					getPathfinder(algorithms[a])->generatePath(map, start, end);
+					getPathfinder(algorithms[a2])->generatePath(map, start, end);
 					the_clock::time_point endTime = the_clock::now();
+
+					// Store the time in the times array
 					float time_taken = (float)duration_cast<nanoseconds>(endTime - startTime).count() / 1000000;
-					times[a][s].push_back(time_taken);
+					times[a2][s].push_back(time_taken);
 
 					// If it's the fastest so far
 					if (a == 0 || time_taken < shortestTime)
 					{
-						fastestAlgorithm = a;
+						fastestAlgorithm = a2;
 						shortestTime = time_taken;
 						isDraw = false;
 					}
@@ -109,6 +126,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 				// If one algorithm was fastest
 				if (!isDraw)
 				{
+					// Increment the algorithm's win count in the wins array
 					wins[fastestAlgorithm][s]++;
 				}
 			}
@@ -117,8 +135,9 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 	}
 	cout << endl;
 
-	// Create file
+	// Create CSV file
 	string filePath = "Test Results/";
+	// Give it a name like (algorithm 1) vs (algorithm 2) etc
 	for (int a = 0; a < numberOfAlgorithms; a++)
 	{
 		if (a > 0) filePath += " vs ";
@@ -177,6 +196,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 	// Write all times to file
 	my_file << endl;
 	my_file << "Time to find Shortest Path vs. Map Size" << endl;
+	// Write the map sizes
 	my_file << "Map Size" << endl;
 	for (int s = 0, mapSize = firstMapSize; s < mapSizes; s++, mapSize += mapSizeInterval)
 	{
@@ -184,6 +204,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 		my_file << mapSize;
 	}
 	my_file << endl;
+	// Write the times for each algorithm
 	for (int a = 0; a < numberOfAlgorithms; a++)
 	{
 		my_file << getAlgorithmName(algorithms[a]) << endl;
@@ -215,6 +236,7 @@ void AlgorithmTester::benchmarkAlgorithms(std::vector<Algorithm> algorithms, int
 }
 
 
+// Returns a pointer to the Pathfinder corresponding to an Algorithm enum
 Pathfinder* AlgorithmTester::getPathfinder(Algorithm algorithm)
 {
 	switch (algorithm)
@@ -233,6 +255,7 @@ Pathfinder* AlgorithmTester::getPathfinder(Algorithm algorithm)
 }
 
 
+// Returns the name corresponding to an Algorithm enum
 string AlgorithmTester::getAlgorithmName(Algorithm algorithm)
 {
 	switch (algorithm)
@@ -251,7 +274,8 @@ string AlgorithmTester::getAlgorithmName(Algorithm algorithm)
 }
 
 
-Vector2i AlgorithmTester::pickEmptyCoord(const Map & map)
+// Returns a random coordinate of a map that is empty
+Vector2i AlgorithmTester::pickEmptyCoord(const Map& map)
 {
 	while (true)
 	{
@@ -261,7 +285,8 @@ Vector2i AlgorithmTester::pickEmptyCoord(const Map & map)
 }
 
 
-Vector2i AlgorithmTester::pickEmptyCoord(const Map & map, Vector2i invalidCoord)
+// Returns a random coordinate of a map that is empty and not equal to invalidCoord. Used for picking an end point that isn't the same as the start point
+Vector2i AlgorithmTester::pickEmptyCoord(const Map& map, Vector2i invalidCoord)
 {
 	while (true)
 	{

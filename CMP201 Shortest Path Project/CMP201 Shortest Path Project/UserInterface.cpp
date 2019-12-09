@@ -20,7 +20,7 @@ UserInterface::~UserInterface()
 
 void UserInterface::beginSession()
 {
-	cout << "Matt's pathfinding algorithm tester\n";
+	cout << "Pathfinding Algorithm Tester\n\n";
 
 	mainMenu();
 }

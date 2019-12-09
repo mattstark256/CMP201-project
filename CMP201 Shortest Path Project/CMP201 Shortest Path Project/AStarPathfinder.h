@@ -8,6 +8,9 @@
 #define MOVEMENT_DIRECTIONS 8
 
 
+// Pathfinder using the A* algorithm
+
+
 class AStarPathfinder :
 	public Pathfinder
 {

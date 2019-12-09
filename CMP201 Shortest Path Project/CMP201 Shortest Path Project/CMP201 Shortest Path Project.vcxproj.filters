@@ -125,9 +125,6 @@
     <ClInclude Include="MapDisplayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AlgorithmTester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -167,10 +164,5 @@
     <ClInclude Include="DijkstraClosedSet.h">
       <Filter>Header Files\Pathfinders\Dijkstra</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="CMP201 Shortest Path Project.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

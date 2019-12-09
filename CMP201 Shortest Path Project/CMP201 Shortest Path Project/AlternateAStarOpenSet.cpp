@@ -52,22 +52,23 @@ void AlternateAStarOpenSet::popBack()
 void AlternateAStarOpenSet::insertOrdered(AStarNode* node)
 {
 	// Linear search
-	//for (std::vector<AStarNode*>::iterator it = set.begin(); it != set.end(); it++)
-	//{
-	//	if ((*it)->f < node->f)
-	//	{
-	//		set.insert(it, node);
-	//		return;
-	//	}
-	//}
-	//set.push_back(node);
+	for (std::vector<AStarNode*>::iterator it = set.begin(); it != set.end(); it++)
+	{
+		if ((*it)->f < node->f)
+		{
+			set.insert(it, node);
+			return;
+		}
+	}
+	set.push_back(node);
 
-	// Binary search
-	auto it = std::lower_bound(set.begin(), set.end(), node->f, [](AStarNode* lhs, float rhs) -> bool { return lhs->f > rhs; });
-	set.insert(it, node);
+	// Binary search (not using this because tests showed it's slightly slower)
+	//auto it = std::lower_bound(set.begin(), set.end(), node->f, [](AStarNode* lhs, float rhs) -> bool { return lhs->f > rhs; });
+	//set.insert(it, node);
 }
 
 
+// Search for an element and return the index. Returns set.end() if it's not found.
 std::vector<AStarNode*>::iterator AlternateAStarOpenSet::findNode(Vector2i coord)
 {
 	return find_if(set.begin(), set.end(), [coord](AStarNode* n) { return n->coord == coord; });

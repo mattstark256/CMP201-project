@@ -5,6 +5,10 @@
 #include <string>
 
 
+// MapDisplayer uses buffers so colours, numbers and characters can be drawn in an order that isn't the same as the output order.
+// Calling print() outputs the buffers.
+
+
 class MapDisplayer
 {
 public:
@@ -12,7 +16,7 @@ public:
 	~MapDisplayer();
 
 	void loadMap(const Map& map);
-	void loadPath(const Path& path);
+	void drawPath(const Path& path);
 	void setChar(Vector2i coord, char character);
 	void setInt(Vector2i coord, int i);
 	void setColour(Vector2i coord, int colour);

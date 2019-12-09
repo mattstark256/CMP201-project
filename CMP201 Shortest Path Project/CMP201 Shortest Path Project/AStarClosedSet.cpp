@@ -25,6 +25,7 @@ void AStarClosedSet::addNode(AStarNode* node)
 }
 
 
+// Return true if the set contains a node with the specified coordinate
 bool AStarClosedSet::contains(Vector2i coord)
 {
 	// Calculate a hash unique to the coordinate

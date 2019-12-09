@@ -20,6 +20,7 @@ MapDisplayer::~MapDisplayer()
 }
 
 
+// Load a map into the buffers
 void MapDisplayer::loadMap(const Map& map)
 {
 	delete[] intBuffer;
@@ -28,6 +29,7 @@ void MapDisplayer::loadMap(const Map& map)
 	intBuffer = new int[bufferSize.x * bufferSize.y]{};
 	colourBuffer = new int[bufferSize.x * bufferSize.y]{};
 
+	// Draw obstacles
 	for (int y = 0; y < bufferSize.y; y++)
 	{
 		for (int x = 0; x < bufferSize.x; x++)
@@ -42,7 +44,8 @@ void MapDisplayer::loadMap(const Map& map)
 }
 
 
-void MapDisplayer::loadPath(const Path& path)
+// Draw a path onto the buffers
+void MapDisplayer::drawPath(const Path& path)
 {
 	const std::vector<Vector2i>* pathCoords = path.getPathCoords();
 	for (auto coord : *pathCoords)
@@ -59,28 +62,33 @@ void MapDisplayer::loadPath(const Path& path)
 }
 
 
+// Draw a character onto the int buffer
 void MapDisplayer::setChar(Vector2i coord, char character)
 {
 	intBuffer[coord.y * bufferSize.x + coord.x] = (int)character;
 }
 
 
+// Draw a number onto the int buffer
 void MapDisplayer::setInt(Vector2i coord, int i)
 {
 	intBuffer[coord.y * bufferSize.x + coord.x] = i + 128;
 }
 
 
+// Draw a colour onto the colour buffer
 void MapDisplayer::setColour(Vector2i coord, int colour)
 {
 	colourBuffer[coord.y * bufferSize.x + coord.x] = colour;
 }
 
 
+// Output the product of the colour and int buffers
 void MapDisplayer::print()
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
+	// Top border
 	SetConsoleTextAttribute(hConsole, BORDER_COLOUR);
 	for (int x = 0; x < bufferSize.x + 2; x++)
 	{
@@ -92,6 +100,7 @@ void MapDisplayer::print()
 
 	for (int y = 0; y < bufferSize.y; y++)
 	{
+		// Left border
 		SetConsoleTextAttribute(hConsole, BORDER_COLOUR);
 		cout << "  ";
 
@@ -110,6 +119,7 @@ void MapDisplayer::print()
 			else { cout << " ?"; }
 		}
 
+		// Right border
 		SetConsoleTextAttribute(hConsole, BORDER_COLOUR);
 		cout << "  ";
 
@@ -117,6 +127,7 @@ void MapDisplayer::print()
 		cout << endl;
 	}
 
+	// Bottom border
 	SetConsoleTextAttribute(hConsole, BORDER_COLOUR);
 	for (int x = 0; x < bufferSize.x + 2; x++)
 	{
